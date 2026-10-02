@@ -1,0 +1,31 @@
+# VORSA INSPECT als Autostart-Dienst (Pi 5)
+# Installieren (auf dem Pi):
+#   sudo cp ~/vorsa-m3/vorsa.service /etc/systemd/system/vorsa.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now vorsa
+# Steuern:
+#   sudo systemctl status vorsa      Zustand ansehen
+#   sudo systemctl restart vorsa     neu starten (nach Code-Update)
+#   sudo systemctl stop vorsa        anhalten (z. B. fuer akida_report.py)
+#   journalctl -u vorsa -f           Log live mitlesen
+#
+# Danach startet die Anlage beim Einschalten von selbst und startet
+# nach einem Absturz automatisch neu - kein Knopf mehr noetig.
+[Unit]
+Description=VORSA INSPECT (Kamera + Akida + Band + Arm)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=<user>
+WorkingDirectory=/home/<user>/vorsa-m3
+ExecStart=/bin/bash /home/<user>/vorsa-m3/start.sh
+Restart=on-failure
+RestartSec=5
+# Kameramodul und Akida-Karten sind beim Boot manchmal ein paar
+# Sekunden spaeter bereit:
+ExecStartPre=/bin/sleep 8
+
+[Install]
+WantedBy=multi-user.target

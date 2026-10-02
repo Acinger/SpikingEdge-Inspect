@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+vorsa_daten/
+selftest_out/
+*.fbz
+*.npz
+.deploy-token
+start.local.sh

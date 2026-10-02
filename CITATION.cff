@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use SE Inspect, VORSA-M3 or the published measurements, please cite this repository."
+title: "SE Inspect (VORSA INSPECT): a neuromorphic inspection cell on Raspberry Pi 5 with BrainChip AKD1500"
+authors:
+  - family-names: Thurmayr
+    given-names: Andreas
+    affiliation: "SpikingEdge (independent)"
+version: "1.0.0-alpha.1"
+date-released: "2026-10-02"
+license: "PolyForm-Noncommercial-1.0.0"
+url: "https://spikingedge.com/projects/vorsa-inspect/"
+repository-code: "https://github.com/Acinger/SpikingEdge-Inspect"
+keywords:
+  - neuromorphic
+  - Akida
+  - AKD1500
+  - on-chip learning
+  - Raspberry Pi 5
+  - industrial inspection
+  - edge AI
+abstract: >-
+  An inspection cell that learns new parts on the AKD1500 in seconds, classifies by
+  aligned silhouettes, measures parts geometrically on the Raspberry Pi and reports
+  "unknown" rather than guessing. Every published figure carries its date, build,
+  firmware and method; benches in tools/ reproduce the synthetic results without hardware.

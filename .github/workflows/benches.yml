@@ -1,0 +1,25 @@
+name: benches
+on: [push, pull_request]
+jobs:
+  benches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install "numpy<2" opencv-python-headless
+      - name: Benches ohne Hardware
+        run: |
+          for t in farbmaske glanz linie_fluss karten_waechter m3_head mehrbild hypothesen verteiler stationaer; do
+            echo "== $t"; python3 tools/test_$t.py | tail -3; done
+          python3 tools/run_selftest.py --use-background --out /tmp/selftest | tail -3
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: UI-Smokes (jsdom gegen synthetischen Server)
+        run: |
+          npm install jsdom@24 >/dev/null
+          VORSA_SYNTH_HALTEN_S=30 python3 tools/run_web.py --port 8765 --synthetisch --daten /tmp/vd > /tmp/srv.log 2>&1 &
+          sleep 6
+          node tools/smoke_stationaer.js http://127.0.0.1:8765 | tail -2
+          node tools/smoke_sprache.js http://127.0.0.1:8765 | tail -2
