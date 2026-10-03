@@ -47,7 +47,7 @@ _DETEKTOR: dict = {"aktiv": False}
 # geklaert statt in zwei Runden.
 # Bei JEDER Aenderung erhoehen. Zuletzt war tagelang dieselbe Nummer im
 # Umlauf, und ob der Pi neuen oder alten Code fuhr, war nicht feststellbar.
-BUILD = "1.0.0-alpha.1"
+BUILD = "1.0.0-alpha.2"
 
 
 # ----------------------------------------------------------------------
@@ -1361,6 +1361,52 @@ class Verarbeitung:
         self._pruef_einst_laden()
         # Alarmbuch (Stufe 2): flankengesteuerte Alarme mit Quittieren.
         self.alarmbuch = Alarmbuch()
+        # BENUTZERROLLEN (I3, 1.9.60): ohne Admin-PIN alles offen.
+        try:
+            from ..rollen import Rollen
+            self.rollen = Rollen(zustand.ordner)
+        except Exception as exc:
+            print(f"  Rollen nicht verfuegbar: {exc}", flush=True)
+            self.rollen = None
+        # DIGITALE EIN-/AUSGAENGE (I1, 1.9.59): Trigger rein, OK/NOK/Bereit/
+        # Fehler raus. Ohne Hardware: Simulation. Bandrelais (GPIO 18) tabu.
+        self._pruef_anfrage_grund = "hand"
+        try:
+            from ..eaio import EinAusgaenge
+            self.eaio = EinAusgaenge(zustand.ordner, ausloesen=self._eaio_trigger)
+            if self.eaio.fehler:
+                print(f"  Ein-/Ausgaenge: {self.eaio.fehler} -> Simulation", flush=True)
+        except Exception as exc:
+            print(f"  Ein-/Ausgaenge nicht verfuegbar: {exc}", flush=True)
+            self.eaio = None
+        # SPS-ANBINDUNG (I2, 1.9.61): Modbus-TCP-Server, Standard aus.
+        self._sps_letzt = {"urteil": "", "objekt_id": -1, "konfidenz": 0.0, "teile": 0}
+        self._sps_seq = 0
+        try:
+            from ..sps import SpsServer
+            self.sps = SpsServer(self._sps_stand, self._sps_befehl)
+            c = self._sps_cfg()
+            if c.get("an"):
+                f = self.sps.starten(int(c.get("port", 1502)), bool(c.get("nur_lesen")))
+                print(f"  SPS/Modbus: {'Port ' + str(self.sps.port) if not f else f}", flush=True)
+        except Exception as exc:
+            print(f"  SPS nicht verfuegbar: {exc}", flush=True)
+            self.sps = None
+        if self.profil == "linie":
+            # Linie: jedes gebuchte Teil meldet OK/NOK an Ein-/Ausgaenge und
+            # SPS - eine Stelle, linie.py bleibt unangetastet.
+            _buche = self.pruefbuch.buche
+
+            def _buche_mit_ausgang(urteil, name="", konf=0.0, *a, **k):
+                e = _buche(urteil, name, konf, *a, **k)
+                try:
+                    if self.eaio is not None:
+                        self.eaio.ergebnis(str(urteil))
+                    self._sps_merken(str(urteil), str(name or ""), float(konf or 0), 1)
+                except Exception:
+                    pass
+                return e
+            self.pruefbuch.buche = _buche_mit_ausgang
         # KARTEN-WAECHTER (1.9.36): Stoerung/Wiederaufnahme einer Karte
         # landet als Alarm im Meldungsbuch - flankengesteuert.
         try:
@@ -2015,6 +2061,14 @@ class Verarbeitung:
                 self._system_stand = self._system_ableiten(art)
                 self.zustand.bereich_info["alarme"] = self._alarm_stand
                 self.zustand.bereich_info["system"] = self._system_stand
+                if self.eaio is not None:
+                    self.eaio.anlage(
+                        bereit=(art == "betreiben"),
+                        stoerung=bool((self._alarm_stand or {}).get("aktiv_alarm")))
+                    self.zustand.bereich_info["eaio"] = {
+                        "zustand": dict(self.eaio.zustand),
+                        "simuliert": self.eaio.status()["simuliert"],
+                        "treiber": self.eaio.cfg.get("treiber")}
             except Exception as exc:
                 # Nicht stumm: ein Fehler hier hiesse "keine Kachel" ohne
                 # Hinweis. Einmal ins Log, dann weiter.
@@ -3691,7 +3745,7 @@ class Verarbeitung:
                 self.konfidenz_schwelle = (None if s is None
                                            else max(0.0, min(1.0, float(s))))
                 self.unbekannt_ziel = float(d.get("unbekannt_ziel", 10.0))
-                if d.get("ausloeser") in ("hand", "auto"):
+                if d.get("ausloeser") in ("hand", "auto", "extern"):
                     self.pruef_ausloeser = d["ausloeser"]
                 if d.get("mehrbild") is not None and self.profil == "stationaer":
                     self.mehrbild.einstellen(anzahl=max(1, min(16, int(d["mehrbild"]))))
@@ -3822,6 +3876,13 @@ class Verarbeitung:
                               "urteil": gesamt, "teile": teile}
         self._pruef_gebucht_sig = self._pruef_szene_sig or self._pruef_szene_kennung()
         self._pruef_gebucht_zeit = time.time()
+        try:
+            if self.eaio is not None:
+                self.eaio.ergebnis(gesamt)
+            t0 = teile[0] if teile else {}
+            self._sps_merken(gesamt, str(t0.get("name") or ""), float(t0.get("konfidenz") or 0), len(teile))
+        except Exception:
+            pass
         return {"ok": True, "urteil": gesamt, "teile": teile}
 
     def _pruef_stationaer_takt(self, art: str) -> None:
@@ -3837,7 +3898,16 @@ class Verarbeitung:
                 self._pruef_gebucht_sig = ""
         if self._pruef_anfrage:
             self._pruef_anfrage = False
-            self._pruef_antwort = self._pruef_stationaer_buchen("hand")
+            grund, self._pruef_anfrage_grund = self._pruef_anfrage_grund, "hand"
+            self._pruef_antwort = self._pruef_stationaer_buchen(grund)
+            if grund in ("extern", "sps") and not self._pruef_antwort.get("ok"):
+                # Trigger ohne Teil: die SPS wartet auf eine Antwort -> NOK.
+                try:
+                    if self.eaio is not None:
+                        self.eaio.ergebnis("leer")
+                    self._sps_merken("leer", "", 0.0, 0)
+                except Exception:
+                    pass
             return
         if (self.pruef_ausloeser == "auto" and sig
                 and sig != self._pruef_gebucht_sig
@@ -3855,6 +3925,134 @@ class Verarbeitung:
         erk = self.zustand.erkannt or {}
         return self.testsatz.aufnehmen(bild.copy(), list(soll or []), notiz,
                                        ist=list(erk.get("je_objekt") or []))
+
+    # ---- SPS (I2) -------------------------------------------------------
+    def _sps_cfg_pfad(self):
+        try:
+            return Path(self.zustand.ordner) / "sps.json"
+        except Exception:
+            return None
+
+    def _sps_cfg(self) -> dict:
+        p = self._sps_cfg_pfad()
+        try:
+            if p and p.exists():
+                return json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+        return {"an": False, "port": 1502, "nur_lesen": False}
+
+    def sps_einstellen(self, k: dict) -> dict:
+        c = self._sps_cfg()
+        if "an" in k:
+            c["an"] = bool(k["an"])
+        if "port" in k:
+            c["port"] = max(1, min(65535, int(k["port"])))
+        if "nur_lesen" in k:
+            c["nur_lesen"] = bool(k["nur_lesen"])
+        p = self._sps_cfg_pfad()
+        try:
+            if p:
+                p.write_text(json.dumps(c), encoding="utf-8")
+        except Exception:
+            pass
+        f = ""
+        if self.sps is not None:
+            if c["an"]:
+                f = self.sps.starten(c["port"], c["nur_lesen"])
+            else:
+                self.sps.stoppen()
+        return {"ok": not f, "grund": f, **self.sps_status()}
+
+    def _sps_programme(self) -> list:
+        rb = getattr(self, "rezeptbuch", None)
+        if rb is None:
+            return []
+        try:
+            return sorted((rb.uebersicht().get("rezepte") or {}).keys(), key=str.casefold)
+        except Exception:
+            return []
+
+    def _sps_merken(self, urteil: str, name: str, konf: float, teile: int) -> None:
+        oid = -1
+        try:
+            for k in self.zustand.klassen.values():
+                if k.name == name:
+                    oid = int(k.id)
+                    break
+        except Exception:
+            pass
+        self._sps_seq = (self._sps_seq + 1) & 0xFFFF
+        self._sps_letzt = {"urteil": urteil, "objekt_id": oid, "konfidenz": konf, "teile": teile, "name": name}
+
+    def _sps_stand(self) -> dict:
+        st = {}
+        try:
+            st = self.pruefbuch.statistik()
+        except Exception:
+            pass
+        al = getattr(self, "_alarm_stand", None) or {}
+        rb = getattr(self, "rezeptbuch", None)
+        aktiv = rb.aktiv_name() if rb else ""
+        prog = self._sps_programme()
+        return {**self._sps_letzt,
+                "bereit": str(self.zustand.betriebsart) == "betreiben" and not al.get("aktiv_alarm"),
+                "laeuft": bool(getattr(self, "_pruef_anfrage", False)),
+                "stoerung": bool(al.get("aktiv_alarm")),
+                "simuliert": not bool((getattr(self.zustand, "hardware", {}) or {}).get("geraet")),
+                "gesamt": st.get("gesamt", 0), "gut": st.get("gut", 0),
+                "unbekannt": st.get("unbekannt", 0), "ausschuss": st.get("ausschuss", 0),
+                "programm": (prog.index(aktiv) + 1) if aktiv in prog else 0,
+                "sequenz": self._sps_seq}
+
+    def _sps_befehl(self, art: str, wert: int) -> str:
+        if art == "pruefen":
+            if self.profil != "stationaer":
+                return "abgewiesen: Pruefen per SPS nur stationaer"
+            if str(self.zustand.betriebsart) != "betreiben":
+                return "abgewiesen: nicht im Pruefen"
+            self._pruef_anfrage_grund = "sps"
+            self._pruef_anfrage = True
+            return "Pruefung ausgeloest"
+        if art == "zaehler_reset":
+            self.pruefbuch.reset()
+            return "Zaehler zurueckgesetzt"
+        if art == "programm":
+            prog = self._sps_programme()
+            if not 1 <= int(wert) <= len(prog):
+                return f"abgewiesen: Programm {wert} gibt es nicht (1-{len(prog)})"
+            name = prog[int(wert) - 1]
+            threading.Thread(target=lambda: self.rezeptbuch.anwenden(name, self, self.zustand),
+                             daemon=True).start()
+            try:
+                self.rollen and self.rollen.protokoll("sps", "/sps/programm", {"name": name})
+            except Exception:
+                pass
+            return f"Programm {wert} ({name}) wird geladen"
+        return "unbekannt"
+
+    def sps_status(self) -> dict:
+        c = self._sps_cfg()
+        st = self.sps.status() if self.sps is not None else {"aktiv": False, "fehler": "nicht verfuegbar"}
+        reg = []
+        try:
+            reg = self.sps.register() if self.sps is not None else []
+        except Exception:
+            pass
+        return {"cfg": c, **st, "register": reg, "programme": self._sps_programme(),
+                "letzt": dict(self._sps_letzt)}
+
+    def _eaio_trigger(self) -> None:
+        """Trigger-Eingang (Flanke): eine Pruefung anfordern. Wirft mit Grund,
+        wenn nicht zulaessig - der Grund steht dann im I/O-Protokoll."""
+        if self.profil != "stationaer":
+            raise RuntimeError("nur im Profil stationaer (Linie hat eigene Sensorik)")
+        if self.pruef_ausloeser != "extern":
+            raise RuntimeError("Pruef-Ausloeser steht nicht auf Extern")
+        if str(self.zustand.betriebsart) != "betreiben":
+            raise RuntimeError("nicht im Pruefen")
+        self._pruef_anfrage_grund = "extern"
+        self._pruef_anfrage = True
 
     def pruefen_jetzt(self) -> dict:
         """/api/pruefen: naechstes Bild buchen und Ergebnis zurueckgeben."""
@@ -3874,7 +4072,8 @@ class Verarbeitung:
         return {"ok": False, "grund": "kein Bild innerhalb von 3 s"}
 
     def pruef_ausloeser_setzen(self, art: str) -> dict:
-        art = "auto" if str(art).lower() == "auto" else "hand"
+        art = str(art).lower()
+        art = art if art in ("auto", "extern") else "hand"
         self.pruef_ausloeser = art
         p = self._pruef_einst_pfad()
         try:
@@ -4602,6 +4801,14 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
             self.wfile.write(roh)
 
         def _koerper(self) -> dict:
+            # 1.9.60: einmal lesen, danach aus dem Zwischenspeicher - die
+            # Rollenpruefung braucht den Koerper vor der Route.
+            if "_koerper_d" in self.__dict__:
+                return self._koerper_d
+            self._koerper_d = self._koerper_lesen()
+            return self._koerper_d
+
+        def _koerper_lesen(self) -> dict:
             try:
                 laenge = int(self.headers.get("Content-Length", 0))
             except Exception:
@@ -4624,7 +4831,24 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
 
         def do_POST(self):
             try:
-                return self._post_roh()
+                # Keep-Alive: dieselbe Handler-Instanz bedient mehrere
+                # Anfragen - den Koerper der vorigen nie wiederverwenden.
+                self.__dict__.pop("_koerper_d", None)
+                weg = urlparse(self.path).path
+                koerper = self._koerper()
+                r = getattr(verarbeitung, "rollen", None)
+                rolle = r.rolle(self.headers.get("X-SE-Token", "")) if r else "admin"
+                if r is not None:
+                    noetig = r.noetig(weg, koerper)
+                    if not r.darf(rolle, noetig):
+                        return self._json({
+                            "ok": False, "verboten": True, "rolle": rolle, "rolle_noetig": noetig,
+                            "grund": {"einrichter": "Anmeldung als Einrichter nötig",
+                                      "admin": "Anmeldung als Admin nötig"}.get(noetig, "nicht erlaubt")}, 403)
+                antwort = self._post_roh()
+                if r is not None:
+                    r.protokoll(rolle, weg, koerper)
+                return antwort
             except Exception as exc:
                 self._routenfehler("POST", exc)
 
@@ -4775,6 +4999,19 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
             if weg == "/api/alarme":
                 # Alarmliste mit Historie (Stufe 2).
                 return self._json(verarbeitung.alarmbuch.liste())
+
+            if weg == "/api/eaio":
+                e = getattr(verarbeitung, "eaio", None)
+                return self._json(e.status() if e else {"fehler": "nicht verfuegbar"})
+
+            if weg == "/api/sps":
+                return self._json(verarbeitung.sps_status())
+
+            if weg == "/api/rollen":
+                r = getattr(verarbeitung, "rollen", None)
+                if r is None:
+                    return self._json({"aktiv": False, "rolle": "admin", "pins": {}, "protokoll": []})
+                return self._json(r.uebersicht(r.rolle(self.headers.get("X-SE-Token", ""))))
 
             if weg == "/api/rezepte":
                 rb = getattr(verarbeitung, "rezeptbuch", None)
@@ -5322,10 +5559,35 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
                 return self._json({"ok": True, "szenen": ts.szenen,
                                    "uebersicht": ts.uebersicht()})
 
+            if weg == "/api/sps":
+                return self._json(verarbeitung.sps_einstellen(koerper))
+
+            if weg in ("/api/anmelden", "/api/abmelden", "/api/rollen"):
+                r = getattr(verarbeitung, "rollen", None)
+                if r is None:
+                    return self._json({"ok": False, "grund": "Rollen nicht verfuegbar"}, 409)
+                if weg == "/api/anmelden":
+                    return self._json(r.anmelden(str(koerper.get("pin", ""))))
+                if weg == "/api/abmelden":
+                    return self._json(r.abmelden(self.headers.get("X-SE-Token", "")))
+                rolle = r.rolle(self.headers.get("X-SE-Token", ""))
+                return self._json(r.verwalten(rolle, koerper))
+
+            if weg == "/api/eaio":
+                # I1: {aktion: "einstellen", ...cfg} | {aktion: "test", signal}
+                e = getattr(verarbeitung, "eaio", None)
+                if e is None:
+                    return self._json({"ok": False, "grund": "nicht verfuegbar"}, 409)
+                if koerper.get("aktion") == "test":
+                    return self._json(e.test(str(koerper.get("signal", ""))))
+                if koerper.get("aktion") == "einstellen":
+                    return self._json(e.einstellen(koerper))
+                return self._json({"ok": False, "grund": "aktion=einstellen|test"}, 400)
+
             if weg == "/api/pruef_einst":
                 # Stufe 5: {schwelle: 0..1 | null, unbekannt_ziel: %}
                 # 1.9.38: {ausloeser: "hand"|"auto"}
-                if koerper.get("ausloeser") in ("hand", "auto"):
+                if koerper.get("ausloeser") in ("hand", "auto", "extern"):
                     return self._json(verarbeitung.pruef_ausloeser_setzen(
                         koerper["ausloeser"]))
                 if koerper.get("mehrbild") is not None:

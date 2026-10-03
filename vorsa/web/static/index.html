@@ -2263,6 +2263,126 @@ body#opsApp.hpm:not(.se) #navMarke .marke-icon { filter:invert(1); }   /* heller
 body#opsApp.schmal #navMarke .marke-text { display:none; }
 /* 1.9.54: Zonen-Kamerastreifen nie mehr - eine Kamera, ein Dock */
 #linieAnsicht .lfkam, #linieAnsicht .lfmehr { display:none !important; }
+/* ABLAUF (1.9.56) ---------------------------------------------------------- */
+body#opsApp .snav.schritt .snr { flex:0 0 22px; width:22px; height:22px; border-radius:50%; border:1.5px solid currentColor;
+  display:inline-flex; align-items:center; justify-content:center; font:700 11.5px/1 Inter,system-ui,sans-serif; font-style:normal; opacity:.85; }
+body#opsApp .snav.schritt.an .snr { opacity:1; }
+body#opsApp .snav.schritt.erledigt .snr { background:var(--gut,#22c55e); border-color:var(--gut,#22c55e); color:#06231a; opacity:1; }
+body#opsApp #navStart { border:1px dashed var(--akzent,#49e7ff) !important; color:var(--akzent,#49e7ff) !important; margin-bottom:6px; }
+body#opsApp #navStart em { margin-left:auto; font-style:normal; font-size:11px; opacity:.85; }
+body#opsApp #navStart[hidden] { display:none !important; }
+body#opsApp.schmal #navStart em { display:none; }
+body#opsApp .ops-haupt { min-height:42px; padding:10px 22px; min-width:150px; border-radius:6px; cursor:pointer;
+  background:var(--akzent); border:1px solid var(--akzent); color:var(--aufAkzent,#041014); font-size:13.5px; font-weight:750; letter-spacing:.02em; }
+body#opsApp .ops-haupt:disabled { opacity:.45; cursor:default; }
+body#opsApp .ops-haupt:not(:disabled):hover { filter:brightness(1.1); }
+body#opsApp #opsNeben { min-height:42px; padding:9px 16px; }
+body#opsApp #opsNeben[hidden], body#opsApp .ops-haupt[hidden], body#opsApp #linieKnopf[hidden] { display:none !important; }
+body#opsApp .ops-mehr-wrap { position:relative; display:inline-flex; }
+body#opsApp .ops-mehr { min-width:42px; min-height:42px; padding:0 10px; display:inline-flex; align-items:center; justify-content:center; }
+body#opsApp .ops-mehr svg { width:18px; height:18px; fill:currentColor; stroke:none; }
+body#opsApp #opsMehr { position:absolute; right:0; top:calc(100% + 6px); z-index:40; display:flex; flex-direction:column; gap:4px;
+  min-width:220px; padding:6px; background:var(--panel); border:1px solid var(--rand); border-radius:8px; box-shadow:0 12px 30px #0006; }
+body#opsApp #opsMehr[hidden] { display:none; }
+body#opsApp #opsMehr > button { width:100%; justify-content:flex-start; text-align:left; min-height:38px; margin:0; }
+body#opsApp #opsMehr > button[hidden] { display:none !important; }
+body#opsApp #kopfChips button.chipfeld { cursor:pointer; text-align:left; background:transparent; border:0; color:inherit; font:inherit; padding:0; }
+body#opsApp #cModell.leise { color:var(--leise) !important; }
+.pu-hinweis { font-size:11px; color:var(--leise,#8a94a0); margin-right:6px; }
+.block.naechst { border-left:3px solid var(--akzent,#49e7ff); background:rgba(73,231,255,.06); }
+.block.naechst.gut { border-left-color:var(--gut,#22c55e); background:rgba(34,197,94,.07); }
+.block.naechst.warn { border-left-color:var(--warn,#f5b041); background:rgba(245,176,65,.07); }
+.naechst .ns-titel { font-weight:700; font-size:14px; color:var(--text); margin-bottom:4px; }
+.naechst .ns-text { font-size:12.5px; color:var(--leise,#8a94a0); line-height:1.45; }
+.naechst .mini { margin-top:10px; }
+#erstStart { position:fixed; right:24px; bottom:56px; z-index:60; width:min(420px,calc(100vw - 32px)); max-height:calc(100vh - 120px); overflow:auto;
+  background:var(--panel,#0b1b22); border:1px solid var(--akzent,#49e7ff); border-radius:12px; box-shadow:0 20px 60px #000a; padding:18px 18px 14px; }
+#erstStart[hidden] { display:none; }
+#erstStart .es-kopf { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+#erstStart .es-eyebrow { font-size:10px; letter-spacing:.14em; color:var(--akzent,#49e7ff); font-weight:700; }
+#erstStart h2 { margin:2px 0 2px; font-size:19px; color:var(--text); }
+#erstStart small { color:var(--leise,#8a94a0); font-size:12px; }
+#erstStart .es-zu { background:transparent; border:0; color:var(--leise,#8a94a0); font-size:22px; cursor:pointer; line-height:1; padding:2px 6px; }
+#erstStart ol { list-style:none; margin:14px 0 8px; padding:0; display:grid; gap:8px; }
+#erstStart li { display:grid; grid-template-columns:26px 1fr auto; gap:10px; align-items:center; padding:9px 10px; border:1px solid var(--rand,#333b43); border-radius:8px; }
+#erstStart li > i { width:24px; height:24px; border-radius:50%; border:1.5px solid var(--rand,#556); display:flex; align-items:center; justify-content:center; font-style:normal; font-weight:700; font-size:12px; color:var(--leise,#8a94a0); }
+#erstStart li.ok { opacity:.6; } #erstStart li.ok > i { background:var(--gut,#22c55e); border-color:var(--gut,#22c55e); color:#06231a; }
+#erstStart li.jetzt { border-color:var(--akzent,#49e7ff); background:rgba(73,231,255,.06); } #erstStart li.jetzt > i { border-color:var(--akzent,#49e7ff); color:var(--akzent,#49e7ff); }
+#erstStart li b { display:block; font-size:13.5px; color:var(--text); } #erstStart li span { display:block; font-size:12px; color:var(--leise,#8a94a0); line-height:1.4; margin-top:2px; }
+#erstStart .es-fuss { font-size:11.5px; color:var(--leise,#8a94a0); }
+/* EINSTELLUNGEN (1.9.57) ---------------------------------------------------- */
+#eNav .e-trenn { display:block; height:1px; background:var(--rand,#333b43); margin:8px 4px; }
+#eInhalt .e-zeile { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid var(--rand,#333b43); }
+#eInhalt .e-zeile b { display:block; font-size:13.5px; color:var(--text); }
+#eInhalt .e-zeile span { display:block; font-size:12px; color:var(--leise,#8a94a0); margin-top:2px; }
+#eInhalt .e-wahl { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; flex:0 0 auto; }
+#eInhalt .e-wahl .mini { min-width:64px; }
+#eInhalt .e-wahl .mini.an, #eInhalt .e-wahl .mini[aria-pressed="true"] { background:var(--akzent,#49e7ff) !important; border-color:var(--akzent,#49e7ff) !important; color:var(--aufAkzent,#041014) !important; font-weight:700; }
+#eInhalt .e-hinweis { font-size:12px; color:var(--leise,#8a94a0); margin:0 0 12px; }
+#eInhalt .e-erkl { font-size:12px; color:var(--leise,#8a94a0); line-height:1.55; margin-top:14px; }
+#eInhalt .e-erkl b { color:var(--text); }
+#eInhalt .e-regler { padding:8px 0; }
+body#opsApp .ops-nav-icons { justify-content:space-around; }
+body#opsApp .ops-nav-icons .snav.klein { justify-content:center; min-height:38px; padding:8px; width:auto; flex:1; }
+body#opsApp .ops-nav-icons .snav.klein span:not(#navSpracheLabel) { display:none; }
+body#opsApp .ops-nav-icons #navSpracheLabel { font-size:11px; font-weight:700; }
+body#opsApp .ops-version { display:none; }
+/* ANLERNEN & PRUEFEN (1.9.58) ------------------------------------------------ */
+.ok-karten { display:grid; grid-template-columns:1fr; gap:6px; }
+.okarte { display:grid; grid-template-columns:44px 1fr 12px; gap:10px; align-items:center; width:100%; text-align:left; cursor:pointer;
+  padding:6px 10px 6px 6px; border:1px solid var(--rand,#333b43); border-radius:8px; background:transparent; color:var(--text); font:inherit; }
+.okarte:hover { border-color:var(--randhell,#55606b); }
+.okarte.aktiv { border-color:var(--akzent,#49e7ff); background:rgba(73,231,255,.07); box-shadow:inset 3px 0 var(--akzent,#49e7ff); }
+.okarte .ok-bild { width:44px; height:44px; border-radius:6px; overflow:hidden; background:#ffffff10; display:flex; align-items:center; justify-content:center; }
+.okarte .ok-bild img { width:100%; height:100%; object-fit:cover; display:block; }
+.okarte .ok-bild span { font-weight:800; font-size:18px; color:var(--leise,#8a94a0); }
+.okarte .ok-text { min-width:0; display:block; }
+.okarte .ok-text b { display:block; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.okarte .ok-text small { display:block; font-size:11.5px; color:var(--leise,#8a94a0); margin:1px 0 5px; }
+.okarte .ok-balken { display:block; height:4px; border-radius:2px; background:#ffffff18; overflow:hidden; }
+.okarte .ok-balken i { display:block; height:100%; background:var(--akzent,#49e7ff); }
+.okarte .ok-ampel { width:10px; height:10px; border-radius:50%; background:#5a6570; }
+.okarte .ok-ampel.gruen { background:var(--gut,#22c55e); } .okarte .ok-ampel.gelb { background:var(--warn,#f5b041); }
+.okarte .ok-ampel.neg { background:transparent; border:2px solid var(--leise,#8a94a0); }
+.okarte.negativ .ok-balken i { background:var(--leise,#8a94a0); }
+.ok-hinweis { font-size:12px; color:var(--leise,#8a94a0); line-height:1.5; margin-top:10px; }
+.ok-hinweis b { color:var(--text); } .ok-hinweis span { display:block; font-size:11px; margin-top:3px; opacity:.8; }
+.lu-live { display:flex; align-items:center; gap:6px; font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--leise,#8a94a0); margin-bottom:4px; }
+.lu-live i { width:7px; height:7px; border-radius:50%; background:var(--rot,#ff2d7a); animation:luLive 1.6s ease-in-out infinite; }
+@keyframes luLive { 50% { opacity:.25; } }
+.lu-umriss.klein { font-size:11.5px; color:var(--leise,#8a94a0); border:0; background:transparent; padding:4px 0 0; margin:6px 0 0; }
+.lu-link { background:none; border:0; padding:0; margin-left:4px; color:var(--akzent,#49e7ff); text-decoration:underline; cursor:pointer; font:inherit; }
+.pu-stat-titel { font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--leise,#8a94a0); margin:14px 0 4px; }
+#rueckToast { position:fixed; left:50%; bottom:52px; transform:translateX(-50%); z-index:70; display:flex; gap:16px; align-items:center;
+  padding:10px 14px 10px 18px; border-radius:10px; background:#101c24; border:1px solid var(--rand,#333b43); color:#e8f4f6; box-shadow:0 12px 30px #0008; font-size:13px; }
+#rueckToast[hidden] { display:none; }
+#rueckToast button { background:none; border:1px solid var(--akzent,#49e7ff); color:var(--akzent,#49e7ff); border-radius:6px; padding:6px 12px; cursor:pointer; font:inherit; font-weight:700; }
+.hilfe-fenster { max-width:520px; }
+.hilfe-liste { padding:14px 18px 18px; display:grid; gap:10px; }
+.hilfe-liste div { display:grid; grid-template-columns:150px 1fr; gap:12px; align-items:center; font-size:13px; color:var(--text); }
+.hilfe-liste kbd { display:inline-block; padding:3px 8px; border:1px solid var(--rand,#556); border-bottom-width:2px; border-radius:5px; font:600 12px ui-monospace,Consolas,monospace; background:#ffffff0a; }
+/* EAIO (1.9.59) */
+.eio-tab { width:100%; border-collapse:collapse; margin:8px 0 4px; font-size:12.5px; }
+.eio-tab th { text-align:left; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--leise,#8a94a0); font-weight:700; padding:4px 6px; }
+.eio-tab td { padding:7px 6px; border-top:1px solid var(--rand,#333b43); vertical-align:middle; }
+.eio-tab td b { display:block; color:var(--text); } .eio-tab td small { display:block; color:var(--leise,#8a94a0); font-size:11px; }
+.eio-tab .eio-feld { width:70px; }
+.eio-lampe { display:inline-block; width:14px; height:14px; border-radius:50%; background:#2a343d; border:1px solid #445; }
+.eio-lampe.an { background:var(--gut,#22c55e); box-shadow:0 0 8px var(--gut,#22c55e); border-color:var(--gut,#22c55e); }
+.eio-lampe.ein.an { background:var(--akzent,#49e7ff); box-shadow:0 0 8px var(--akzent,#49e7ff); border-color:var(--akzent,#49e7ff); }
+.eio-inv { font-size:11.5px; color:var(--leise,#8a94a0); white-space:nowrap; }
+.eio-log { font:12px ui-monospace,Consolas,monospace; color:var(--leise,#8a94a0); display:grid; gap:2px; max-height:150px; overflow:auto; }
+.eio-log span { color:var(--text); margin-right:10px; }
+/* ROLLEN (1.9.60) */
+body#opsApp.rolle-bediener .ops-expert, body#opsApp.rolle-bediener #betriebKnopf { display:none !important; }
+body#opsApp #navRolle[hidden] { display:none !important; }
+body#opsApp #navRolle.offen { color:var(--akzent,#49e7ff) !important; }
+.anm-fenster { max-width:360px; }
+.anm-koerper { padding:16px 18px 18px; display:grid; gap:10px; }
+.anm-koerper p { margin:0; color:var(--text); font-size:14px; }
+.anm-koerper input { font-size:22px; letter-spacing:.4em; text-align:center; padding:10px; }
+.anm-koerper small { color:var(--leise,#8a94a0); font-size:11.5px; line-height:1.4; }
+.anm-fehler { color:var(--rot,#ff2d7a); font-size:12.5px; min-height:16px; }
 /* Kamera-Dock (1.9.52) */
 #kamDock { position:absolute; left:0; right:0; bottom:30px; z-index:6; max-height:0; overflow:hidden;
   background:var(--panel,#0b1b22); border-top:1px solid var(--rand,#333b43); transition:max-height .32s ease; }
@@ -5025,8 +5145,8 @@ body#opsApp #rechts { flex:0 0 auto; overflow:visible; min-height:auto; }
 <header id="kopf" aria-label="Systemstatus">
   <div id="kopfChips">
     <span class="chipfeld"><small>System</small><b id="cSys">VERBINDE …</b></span>
-    <button class="chipfeld" data-tat="rezepte" title="Rezepte und Aufträge öffnen"><small>Rezept</small><b id="cRezept">–</b></button>
-    <span class="chipfeld"><small>Modell</small><b id="cModell">–</b></span>
+    <button class="chipfeld" data-tat="rezepte" title="Prüfprogramme öffnen"><small>Programm</small><b id="cRezept">–</b></button>
+    <button class="chipfeld" data-tat="modus" data-modus="anlernen" title="Anlernen öffnen"><small>Gelernt</small><b id="cModell">–</b></button>
     <span class="chipfeld"><small>AUFLÖSUNG</small><b id="cAufl">–</b></span>
     <span class="chipfeld"><small>BILDRATE</small><b id="cFps">–</b></span>
   </div>
@@ -5042,19 +5162,25 @@ body#opsApp #rechts { flex:0 0 auto; overflow:visible; min-height:auto; }
     <img src="/static/se_icon.webp" alt="SpikingEdge" class="marke-icon">
     <span class="marke-text"><b>INSPECT</b></span>
   </div>
+  <!-- ABLAUF (1.9.56): die drei Schritte in der Reihenfolge, in der man sie braucht -->
+  <button class="snav ops-expert" id="navStart" data-tat="erststart" hidden title="Erste Schritte: geführte Einrichtung">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 15V2M3 2h9l-2 3 2 3H3"/></svg><span>Erste Schritte</span><em id="navStartStand">0/6</em></button>
+  <div class="ops-nav-caption ops-expert">Ablauf</div>
+  <button class="snav modus schritt ops-expert" data-tat="modus" data-modus="einrichten" title="Schritt 1: Kamera, Aufnahmefenster und Leerbild einrichten">
+    <i class="snr" aria-hidden="true">1</i><span>Einrichten</span></button>
+  <button class="snav modus schritt ops-expert" data-tat="modus" data-modus="anlernen" title="Schritt 2: Objekte anlegen, fotografieren, lernen">
+    <i class="snr" aria-hidden="true">2</i><span>Anlernen</span></button>
+  <button class="snav modus schritt" data-tat="modus" data-modus="betreiben" title="Schritt 3: Teile prüfen">
+    <i class="snr" aria-hidden="true">3</i><span>Prüfen</span></button>
   <div class="ops-nav-caption">Betrieb</div>
-  <button class="snav modus" data-tat="modus" data-modus="betreiben" title="Erkennung">
-    <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5"/><path d="M8 0v4M8 12v4M0 8h4M12 8h4"/></svg><span>Erkennung</span></button>
   <button class="snav" id="navLinie" data-tat="ansicht_linie" title="Linienbetrieb">
     <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="8" width="14" height="6" rx="3"/><path d="M3 4h10M10 1l3 3-3 3"/><circle cx="4" cy="11" r="1"/><circle cx="12" cy="11" r="1"/></svg><span>Linienbetrieb</span></button>
-  <button class="snav" data-tat="rezepte" title="Rezepte und Aufträge">
-    <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="10" height="13" rx="1"/><path d="M6 1h4v3H6zM6 7h4M6 10h4"/></svg><span>Rezepte</span></button>
-  <div class="ops-nav-caption ops-expert">Einrichten</div>
-  <button class="snav modus ops-expert" data-tat="modus" data-modus="einrichten" title="Kamera und Zonen einrichten">
-    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1v14M8 1v14M13 1v14M1 5h4M6 10h4M11 6h4"/></svg><span>Kamera &amp; Zonen</span></button>
-  <button class="snav modus ops-expert" data-tat="modus" data-modus="anlernen" title="Objekte anlegen, Fotos aufnehmen, trainieren">
-    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 12l1-3 8-8 3 3-8 8zM2 15h12"/></svg><span>Objekte &amp; Lernen</span></button>
+  <button class="snav" data-tat="rezepte" title="Prüfprogramme: Einrichtung je Produkt, Umrüsten per Auswahl">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="10" height="13" rx="1"/><path d="M6 1h4v3H6zM6 7h4M6 10h4"/></svg><span>Prüfprogramme</span></button>
   <div class="ops-nav-caption">System</div>
+  <!-- EINSTELLUNGEN (1.9.57): ein Fenster für alles Einstellbare -->
+  <button class="snav ops-expert" id="navEinstellungen" data-tat="abschnitt_oeffnen" data-id="allgemein" title="Einstellungen: Allgemein, Kamera, Erkennung, Prüfprogramme">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/></svg><span>Einstellungen</span></button>
   <button class="snav" id="navZustand" data-tat="abschnitt_oeffnen" data-id="hardware" title="Zustand: Hardware, Diagnose, Wartung">
     <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="1"/><path d="M6 0v3M10 0v3M6 13v3M10 13v3M0 6h3M0 10h3M13 6h3M13 10h3"/></svg><span>Zustand</span></button>
   <button class="snav" data-tat="alarme" id="navMeldungen" title="Alarme und Meldungen">
@@ -5065,6 +5191,8 @@ body#opsApp #rechts { flex:0 0 auto; overflow:visible; min-height:auto; }
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 2v12"/></svg><span id="opsThemeLabel">Dunkel</span></button>
       <button class="snav klein" data-tat="sprache" id="navSprache" title="Sprache: Deutsch / English" lang="en">
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c2.5 2.5 2.5 9.5 0 12M8 2c-2.5 2.5-2.5 9.5 0 12"/></svg><span id="navSpracheLabel">EN</span></button>
+      <button class="snav klein" id="navRolle" data-tat="rolle" hidden title="Anmelden">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="8" rx="1.5"/><path d="M5 7V5a3 3 0 016 0v2"/></svg><span id="navRolleLabel"></span></button>
       <button class="snav klein" data-tat="seite_schmal" title="Navigation ein- oder ausklappen">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3L3 8l5 5M13 3L8 8l5 5"/></svg><span>Einklappen</span></button>
     </div>
@@ -5072,14 +5200,60 @@ body#opsApp #rechts { flex:0 0 auto; overflow:visible; min-height:auto; }
   </div>
 </nav>
 
+<div id="erstStart" role="dialog" aria-modal="false" aria-labelledby="erstStartTitel" hidden>
+  <div class="es-kopf"><div><div class="es-eyebrow">SE INSPECT</div><h2 id="erstStartTitel">Erste Schritte</h2>
+    <small id="erstStartStand"></small></div>
+    <button class="es-zu" data-tat="erststart_zu" aria-label="Schließen" title="Schließen — jederzeit wieder über „Erste Schritte“">×</button></div>
+  <ol id="erstStartListe"></ol>
+  <div class="es-fuss">Alles hakt sich von selbst ab. Du kannst jeden Punkt auch später machen.</div>
+</div>
+
+<div class="schleier" id="dAnmelden" hidden>
+  <div class="fenster anm-fenster" role="dialog" aria-labelledby="anmTitel">
+    <div class="fkopf"><h2 id="anmTitel">Anmelden</h2><button class="zu" data-tat="dialog_zu" data-ziel="dAnmelden">×</button></div>
+    <div class="anm-koerper">
+      <p id="anmGrund">PIN eingeben</p>
+      <input id="anmPin" class="eingabe" type="password" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="PIN">
+      <div id="anmFehler" class="anm-fehler"></div>
+      <button class="ops-haupt" data-tat="anmelden" style="width:100%">Anmelden</button>
+      <small>Einrichter: einrichten und anlernen · Admin: zusätzlich Benutzer und Ein-/Ausgänge</small>
+    </div>
+  </div>
+</div>
+<div id="rueckToast" role="status" hidden><span id="rueckText"></span>
+  <button data-tat="rueckgaengig">Rückgängig</button></div>
+<div class="schleier" id="dHilfe" hidden>
+  <div class="fenster hilfe-fenster">
+    <div class="fkopf"><h2>Tastenkürzel</h2><button class="zu" data-tat="hilfe_zu">×</button></div>
+    <div class="hilfe-liste">
+      <div><kbd>Leertaste</kbd><span>Prüfen (Schritt 3) · Foto aufnehmen (Schritt 2)</span></div>
+      <div><kbd>1</kbd>–<kbd>8</kbd><span>Objekt wählen (Schritt 2)</span></div>
+      <div><kbd>Mausrad</kbd><span>über dem Rahmen: Aufnahmefenster größer/kleiner</span></div>
+      <div><kbd>Rechtsklick</kbd><span>im Bild: Anzeige und Aktionen</span></div>
+      <div><kbd>Esc</kbd><span>Fenster schließen</span></div>
+      <div><kbd>?</kbd><span>diese Hilfe</span></div>
+    </div>
+  </div>
+</div>
+
 <section id="opsCommand" aria-label="Arbeitsbereich und Linienbefehle" tabindex="-1">
   <div class="ops-page-title"><div class="ops-eyebrow">BILDERKENNUNG</div><h1 id="opsPageName">Erkennung</h1></div>
   <div class="ops-actions">
-    <button class="ops-btn" id="opsAnalysisButton" data-ops-action="analyse" aria-haspopup="dialog">Analyse öffnen</button>
     <span id="liniePhase" hidden></span>
-    <button class="kopftaste" data-tat="betrieb" id="betriebKnopf" title="Nur die Ansicht ändern; der Maschinenmodus bleibt unverändert">Bedienansicht</button>
+    <button class="ops-btn" id="opsNeben" hidden></button>
+    <button class="ops-haupt" id="opsHaupt" hidden></button>
     <button id="armKnopf" class="ops-btn" data-tat="arm_dialog" hidden title="Arduino-Arm steuern und anlernen">Roboterarm</button>
     <button id="linieKnopf" data-tat="linie">Linie aktivieren</button>
+    <span class="ops-mehr-wrap">
+      <button class="ops-btn ops-mehr" id="opsMehrKnopf" data-tat="ops_mehr" aria-haspopup="menu" aria-expanded="false" title="Weitere Aktionen" aria-label="Weitere Aktionen">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="13" cy="8" r="1.4"/></svg></button>
+      <span id="opsMehr" role="menu" hidden>
+        <button class="ops-btn" id="opsAnalysisButton" data-ops-action="analyse" role="menuitem" aria-haspopup="dialog">Analyse öffnen</button>
+        <button class="kopftaste" data-tat="betrieb" id="betriebKnopf" role="menuitem" title="Nur die Ansicht ändern; der Maschinenmodus bleibt unverändert">Bedienansicht</button>
+        <button class="ops-btn" data-tat="erststart" role="menuitem">Erste Schritte</button>
+        <button class="ops-btn" data-tat="hilfe" role="menuitem">Tastenkürzel  ?</button>
+      </span>
+    </span>
   </div>
 </section>
 
@@ -5115,9 +5289,6 @@ body#opsApp #rechts { flex:0 0 auto; overflow:visible; min-height:auto; }
           <svg viewBox="0 0 16 16"><rect x="2.5" y="4" width="11" height="8"
             rx="1" stroke-dasharray="2.4 1.8"/><circle cx="8" cy="8"
             r="1.6"/></svg></button>
-        <button class="vknopf" data-tat="drehen" title="Kamerabild 90° drehen">
-          <svg viewBox="0 0 16 16"><path d="M13.2 8.6a5.3 5.3 0 1 1-1.5-4.4
-            M13.5 1.6v3.1h-3.1"/></svg></button>
         <button class="vknopf" data-tat="vollbild" title="Vollbild">
           <svg viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button>
       </span>
@@ -5312,7 +5483,7 @@ body#opsApp #rechts { flex:0 0 auto; overflow:visible; min-height:auto; }
 
 <div class="schleier" id="dEinstellungen" hidden>
   <div class="fenster">
-    <div class="fkopf"><h2>Zustand</h2>
+    <div class="fkopf"><h2>Einstellungen</h2>
       <button class="zu" data-tat="dialog_zu" data-ziel="dEinstellungen">×</button></div>
     <div class="fkoerper">
       <div id="eNav"></div>
@@ -5332,7 +5503,7 @@ body#opsApp #rechts { flex:0 0 auto; overflow:visible; min-height:auto; }
 
 <div class="schleier" id="dRezepte" hidden>
   <div class="fenster">
-    <div class="fkopf"><h2>Rezepte &amp; Aufträge</h2>
+    <div class="fkopf"><h2>Prüfprogramme</h2>
       <button class="zu" data-tat="dialog_zu" data-ziel="dRezepte">×</button></div>
     <div id="rzKoerper" style="padding:14px 16px;overflow-y:auto"></div>
   </div>
@@ -6802,11 +6973,52 @@ function setzeVerbindung(an) {
 naechstesBild();
 
 /* ---------- Serverzugriff ---------- */
+/* ROLLEN (1.9.60): Token je Browser; eine verweigerte Aktion oeffnet die Anmeldung. */
+let SE_TOKEN = "";
+try { SE_TOKEN = localStorage.getItem("nbes_token") || ""; } catch (e) {}
+let ROLLE = { aktiv: false, rolle: "admin", pins: {} };
 async function hole(pfad, daten) {
-  const o = daten ? { method:"POST", headers:{"Content-Type":"application/json"},
-                      body:JSON.stringify(daten) } : {};
+  const kopf = SE_TOKEN ? { "X-SE-Token": SE_TOKEN } : {};
+  const o = daten ? { method:"POST", headers:Object.assign({"Content-Type":"application/json"}, kopf),
+                      body:JSON.stringify(daten) } : { headers: kopf };
   const a = await fetch(pfad, o);
-  return a.json();
+  const j = await a.json();
+  if (a.status === 403 && j && j.verboten) {
+    MELDUNG = j.grund || "nicht erlaubt"; setTimeout(() => { MELDUNG = ""; }, 4000);
+    try { anmeldenZeigen(j.grund, j.rolle_noetig); } catch (e) {}
+  }
+  return j;
+}
+async function rolleLaden() {
+  try { ROLLE = await hole("/api/rollen"); } catch (e) {}
+  rolleAnwenden();
+}
+function rolleAnwenden() {
+  const bed = !!ROLLE.aktiv && ROLLE.rolle === "bediener";
+  document.body.classList.toggle("rolle-bediener", bed);
+  const k = $("navRolle");
+  if (k) {
+    const n = { admin: "Admin", einrichter: "Einrichter", bediener: "Bediener" }[ROLLE.rolle] || "";
+    k.hidden = !ROLLE.aktiv;
+    k.classList.toggle("offen", ROLLE.rolle !== "bediener");
+    k.title = ROLLE.aktiv ? `Angemeldet: ${n} — Klick: ${ROLLE.rolle === "bediener" ? "anmelden" : "abmelden"}` : "";
+    const l = $("navRolleLabel"); if (l) l.textContent = ROLLE.rolle === "bediener" ? "" : n.slice(0, 1);
+  }
+  if (bed && typeof MODUS !== "undefined" && MODUS !== "betreiben") { try { setzeModus("betreiben"); } catch (e) {} }
+}
+function anmeldenZeigen(grund, noetig) {
+  const d = $("dAnmelden"); if (!d) return;
+  $("anmGrund").textContent = grund || (noetig === "admin" ? "PIN für Admin eingeben" : "PIN eingeben");
+  $("anmFehler").textContent = "";
+  d.hidden = false;
+  const f = $("anmPin"); f.value = ""; setTimeout(() => f.focus(), 30);
+}
+async function anmelden() {
+  const r = await hole("/api/anmelden", { pin: $("anmPin").value });
+  if (r && r.ok) {
+    SE_TOKEN = r.token; try { localStorage.setItem("nbes_token", SE_TOKEN); } catch (e) {}
+    $("dAnmelden").hidden = true; await rolleLaden(); LETZTE_SPALTE = ""; aktualisieren();
+  } else { $("anmFehler").textContent = (r && r.grund) || "PIN falsch"; $("anmPin").value = ""; }
 }
 const objekt = id => (Z && Z.klassen || []).find(k => k.id === id);
 const echt = () => (Z && Z.klassen || []).filter(k => !k.negativ);
@@ -7184,6 +7396,7 @@ function ansichtMenueMalen() {
       ${MODUS !== "betreiben" ? `<button class="mini" data-tat="fenster_schritt" data-schritt="-5">Fenster −</button>
       <button class="mini" data-tat="fenster_schritt" data-schritt="5">Fenster +</button>` : ""}
       <button class="mini" data-tat="leerbild" data-art="haupt">${L ? "Leerbild neu" : "Leerbild merken"}</button>
+      ${MODUS !== "betreiben" ? `<button class="mini" data-tat="drehen">Bild 90° drehen</button>` : ""}
       ${MODUS === "betreiben" && STATIONAER() ? `<button class="mini an" data-tat="pruefen">Prüfen</button>` : ""}
     </div>` : "";
   const neu = `<div class="am-kopf">Anzeige</div>
@@ -7757,18 +7970,23 @@ async function rezepteLaden() {
   try { rezepteMalen(await hole("/api/rezepte")); } catch (e) {}
 }
 function rezepteMalen(d) {
-  const k = $("rzKoerper"); if (!k) return;
+  if (d) RZ_LETZT = d;
+  const k = $("rzKoerper");
+  if (k) k.innerHTML = rezepteHtml(RZ_LETZT || {});
+  try { if (ABSCHNITT === "programme") zeichneEinstellungen(); } catch (e) {}
+}
+function rezepteHtml(d) {
   const R = (d && d.rezepte) || {};
   const namen = Object.keys(R).sort((a, b) => a.localeCompare(b, "de"));
   const inhalt = r => [r.kamera ? "Kamera" : "", r.zonen ? "Zonen" : "",
                        r.arm ? "Arm" : ""].filter(Boolean).join(" · ") || "leer";
-  k.innerHTML = `
+  return `
     <div class="leise" style="font-size:11px;margin-bottom:10px;line-height:1.5">
-      Ein Rezept bündelt die Einrichtung für ein Produkt: Kameraeinstellungen,
-      Erkennungsfenster, Zonen + Kameraquellen und die Arm-Sequenz. Das
-      Gelernte bleibt davon unberührt.</div>
+      Ein Prüfprogramm bündelt die Einrichtung für ein Produkt: Kameraeinstellungen,
+      Aufnahmefenster, Zonen und die Arm-Sequenz. Umrüsten = Programm laden.
+      Das Gelernte bleibt davon unberührt.</div>
     <div class="al-kopf" style="gap:6px">
-      <input id="rzName" class="adx-eingabe" placeholder="Name, z. B. Karabiner M6"
+      <input class="adx-eingabe rz-name" placeholder="Name, z. B. Karabiner M6"
              style="flex:1" value="${txt(d.aktiv || "")}">
       <button class="pu-knoepfe-btn" data-tat="rezept_speichern"
         style="font:inherit;font-size:9px;font-weight:800;letter-spacing:.4px;
@@ -7786,8 +8004,8 @@ function rezepteMalen(d) {
                 title="Mit aktueller Einrichtung überschreiben">Aktualisieren</button>
         <button data-tat="rezept_loeschen" data-name="${txt(n)}">×</button>
       </div>`).join("")
-    : `<div class="al-leer">Noch kein Rezept. Richte ein Produkt ein (Zonen,
-        Kamera, Arm-Sequenz) und speichere die Einrichtung unter einem Namen —
+    : `<div class="al-leer">Noch kein Prüfprogramm. Richte ein Produkt ein (Kamera,
+        Fenster, Zonen, Arm-Sequenz) und speichere die Einrichtung unter einem Namen —
         beim nächsten Umrüsten genügt „Laden".</div>`}`;
 }
 function rezeptChipSetzen() {
@@ -7938,8 +8156,8 @@ function kamDockMalen() {
       <div class="kd-wert">Leerbild: <b>${L ? "✓ " + txt(L) : "nicht gemerkt"}</b></div>
       <div class="kd-knoepfe"><button class="mini ${L ? "" : "an"}" data-tat="leerbild" data-art="haupt">${L ? "Neu merken" : "Leerbild merken"}</button>
         ${L ? `<button class="mini gefahr" data-tat="leerbild_weg" data-art="haupt">Verwerfen</button>` : ""}</div>
-      <div class="kd-z"><input class="eingabe" id="presetName" type="text" placeholder="Name der Einstellung"><button class="mini" data-tat="preset_speichern">Sichern</button></div>
-      ${presets.length ? `<div class="kd-presets">${presets.slice(0, 4).map(n => `<button class="mini" data-tat="preset_laden" data-name="${txt(n)}" title="Einstellung laden">${txt(n)}</button>`).join("")}</div>` : `<div class="kd-hinweis">Kamera + Fenster zusammen sichern — nach dem Einrichten.</div>`}
+      <div class="kd-z"><input class="eingabe rz-name" type="text" placeholder="Prüfprogramm, z. B. Gehäuse A" value="${txt(((Z.bereich || {}).rezept) || "")}"><button class="mini" data-tat="rezept_speichern" title="Kamera + Fenster als Prüfprogramm sichern">Sichern</button></div>
+      <div class="kd-knoepfe"><button class="mini" data-tat="rezepte">Prüfprogramme …</button></div>
     </div>`;
   if (neu !== KAMDOCK_LETZT) { box.innerHTML = neu; KAMDOCK_LETZT = neu; }
   const st = $("kdStand");
@@ -7962,13 +8180,16 @@ function liveUrteilHtml(L, P, U) {
       <span class="lu-pct">${pct} %</span>
     </div>`;
   const ohneUmriss = !leer && L.name && teile === 0 && (Z.detektionen || []).length === 0;
-  const umrissHinweis = ohneUmriss ? `<div class="lu-umriss">Urteil vom Gesamtbild — die Geometrie fand keinen Umriss, darum auch keine Objektrahmen.
-      <button class="mini" data-tat="leerbild" data-art="haupt">Leerbild merken</button></div>` : "";
+  const lbDa = !!(((Z.bereich || {}).leerbild || {})[quelleVon("haupt")]);
+  // 1.9.58: eine leise Zeile statt eines Kastens; der Knopf nur, solange er hilft.
+  const umrissHinweis = ohneUmriss ? `<div class="lu-umriss klein" title="Die Geometrie fand keinen Umriss — das Urteil stammt vom ganzen Fenster, darum keine Objektrahmen.">ⓘ Kein Umriss gefunden · Urteil aus dem ganzen Fenster${
+      lbDa ? "" : ` <button class="lu-link" data-tat="leerbild" data-art="haupt">Leerbild merken</button>`}</div>` : "";
   const klassen = (!leer && alle.length > 1) ? `<div class="lu-klassen">${alle.map(a => `
       <div class="lu-k ${a.name === L.name ? "sieger" : ""}"><span class="lu-kn">${txt(a.name)}</span>
         <div class="lu-kb"><div style="width:${Math.round(Math.max(0, Math.min(1, a.anteil)) * 100)}%"></div></div>
         <span class="lu-kv">${Math.round(a.anteil * 100)}</span></div>`).join("")}</div>` : "";
   return `<div class="lu ${L.urteil}" data-lu="${txt(L.urteil + ":" + name + ":" + pct)}">
+    <div class="lu-live" title="Was die Kamera gerade sieht — gezählt wird erst beim Prüfen"><i></i>Live-Vorschau</div>
     <div class="lu-kopf"><span class="lu-urteil">${U[L.urteil] || "—"}</span>
       <span class="lu-teile">${teile ? (teile === 1 ? "1 Teil" : teile + " Teile") : ""}</span></div>
     <div class="lu-name">${txt(name)}</div>
@@ -8046,11 +8267,11 @@ function pruefStationaerKopf(P, zeit) {
         </div>`).join("")}</div></div></div>` : "";
   return `<div class="pu-stationaer">
     <div class="pu-ausloeser">
-      <button class="pu-pruefen" data-tat="pruefen" ${(!teil || PRUEF_LAEUFT || MODUS !== "betreiben") ? "disabled" : ""}
-        title="Alle Teile im Bild jetzt prüfen und buchen (Leertaste)">PRÜFEN</button>
+      <span class="pu-hinweis">Auslöser</span>
       <span class="ltakt" title="Hand: Knopf oder Leertaste. Auto: jede neue, still liegende Szene wird von selbst geprüft.">
-        <button data-tat="pruef_ausloeser" data-wert="hand" class="${auto ? "" : "an"}">Hand</button>
+        <button data-tat="pruef_ausloeser" data-wert="hand" class="${!auto && P.ausloeser !== "extern" ? "an" : ""}">Hand</button>
         <button data-tat="pruef_ausloeser" data-wert="auto" class="${auto ? "an" : ""}">Auto</button>
+        <button data-tat="pruef_ausloeser" data-wert="extern" class="${P.ausloeser === "extern" ? "an" : ""}" title="Extern: Trigger-Eingang (Lichtschranke/SPS) löst aus — siehe Einstellungen › Ein-/Ausgänge">Extern</button>
       </span>
     </div>
     <div class="pu-status ${P.szene_steht && teil && !P.szene_gebucht ? "bereit" : ""}">${status}${
@@ -8081,13 +8302,13 @@ function pruefKarten() {
   return `<div class="block"><section class="ops-pruef-summary">
     ${liveUrteilHtml(L, P, U)}
     ${stat}
+    <div class="pu-stat-titel">Gebuchte Prüfungen</div>
     <div class="pu-stat">
       <div><span>Geprüft</span><b>${P.gesamt ?? "–"}</b></div>
       <div><span>Gut-Quote</span><b>${P.quote_gut != null ? P.quote_gut + " %" : "–"}</b></div>
       <div><span>Unbekannt</span><b class="unb">${P.unbekannt ?? "–"}</b></div>
       <div><span>Teile / min</span><b>${P.teile_pro_min ?? "–"}</b></div>
     </div>
-    <p class="ops-count-note">Zähler erfassen abgeschlossene Prüfungen.</p>
     ${STATIONAER() ? testsatzBlock(P) : ""}</section>
     <details class="ops-details" data-ops-disclosure="session" ${OPS_OPEN.has("session") ? "open" : ""}>
       <summary>Sitzungsdetails</summary><div class="ops-detail-content"><div class="pu-stat">
@@ -8293,9 +8514,9 @@ function zeichneRechts() {
   const tippt = ruhig() || (fokus && r.contains(fokus)
     && /^(INPUT|SELECT|TEXTAREA)$/.test(fokus.tagName));
 
-  let neu = MODUS === "einrichten" ? spalteEinrichten()
+  let neu = blockNaechsterSchritt() + (MODUS === "einrichten" ? spalteEinrichten()
             : MODUS === "anlernen"   ? spalteAnlernen()
-            :                          spalteBetreiben();
+            :                          spalteBetreiben());
   const production = skinDash() && MODUS === "betreiben";
   const summary = $("opsSummary");
   summary.hidden = !production;
@@ -8478,20 +8699,13 @@ function spalteEinrichten() {
   const namen = Object.keys(p);
   return blockCheckliste() + griffFensterHtml() + blockKameraEinrichten() + blockLeerbild() + blockMehrbild() + blockChip() + blockDrift() + `
     <div class="block">
-      <div class="btitel"><span>EINSTELLUNGEN SICHERN</span></div>
-      <div class="zeile"><input class="eingabe" id="presetName" type="text"
-           placeholder="Name der Einstellung"></div>
-      <div class="knopfreihe"><button class="mini" data-tat="preset_speichern">
-        Aktuelle Einstellung sichern</button></div>
-      ${namen.length ? namen.map(n => `
-        <div class="zeile"><label style="min-width:auto;flex:1">${txt(n)}</label>
-          <button class="mini" style="flex:0 0 auto" data-tat="preset_laden"
-                  data-name="${txt(n)}">laden</button>
-          <button class="mini gefahr" style="flex:0 0 auto" data-tat="preset_loeschen"
-                  data-name="${txt(n)}">×</button></div>`).join("")
-        : '<div class="leise" style="font-size:12px">noch keine gesichert</div>'}
-      <div class="hinweis">Gesichert wird die Kameraeinstellung zusammen mit
-        dem Ausschnitt. Getrennt wären sie wertlos.</div>
+      <div class="btitel"><span>ALS PRÜFPROGRAMM SICHERN</span><span>${txt(((Z.bereich || {}).rezept) || "")}</span></div>
+      <div class="zeile"><input class="eingabe rz-name" type="text"
+           placeholder="Name, z. B. Gehäuse A" value="${txt(((Z.bereich || {}).rezept) || "")}"></div>
+      <div class="knopfreihe"><button class="mini an" data-tat="rezept_speichern">Sichern</button>
+        <button class="mini" data-tat="rezepte">Alle Prüfprogramme …</button></div>
+      <div class="hinweis">Gesichert werden Kamera, Aufnahmefenster${STATIONAER() ? "" : ", Zonen und Arm-Sequenz"} —
+        beim Umrüsten genügt „Laden“. ${namen.length ? `Ältere Kamera-Einstellungen (${namen.length}) unter Einstellungen › Prüfprogramme.` : ""}</div>
     </div>`;
 }
 
@@ -8499,37 +8713,45 @@ function spalteAnlernen() {
   const ks = Z.klassen || [];
   const k = objekt(AKTIV);
   const plan = Z.trainingsplan || {};
+  // OBJEKTKARTEN (1.9.58): Bild, Fortschritt, Ampel - auf einen Blick, was fehlt.
+  const karte = (x) => {
+    const p = x.prototypen || 0, voll = p >= ZIEL;
+    const ampel = x.negativ ? "neg" : voll ? "gruen" : p ? "gelb" : "grau";
+    const unter = x.negativ ? "Hintergrund · " + p + " Fotos"
+      : voll ? p + " Fotos · bereit" : p ? `noch ${ZIEL - p} Fotos` : "noch keine Fotos";
+    return `<button class="okarte ${x.id === AKTIV ? "aktiv" : ""} ${x.negativ ? "negativ" : ""}" data-tat="objekt" data-id="${x.id}"
+        title="${x.negativ ? "Hintergrund: leere Fläche, Unterlage, Störteile — damit die Anlage auch „nichts“ sagen kann" : "Objekt wählen"}">
+      <span class="ok-bild">${x.titelbild ? `<img src="/api/prototyp?datei=${encodeURIComponent(x.titelbild)}" alt="" loading="lazy">`
+        : `<span>${txt((x.name || "?").slice(0, 1).toUpperCase())}</span>`}</span>
+      <span class="ok-text"><b>${txt(x.name)}</b><small>${unter}</small>
+        <span class="ok-balken"><i style="width:${Math.min(100, Math.round(p / ZIEL * 100))}%"></i></span></span>
+      <i class="ok-ampel ${ampel}" aria-hidden="true"></i></button>`;
+  };
   let aus = `<div class="block">
-    <div class="btitel"><span>OBJEKTE</span><span>${ks.length}</span></div>
-    <div class="chips">${ks.map(x => `
-      <span class="chip ${x.id === AKTIV ? "aktiv" : ""} ${x.negativ ? "negativ" : ""}"
-            data-tat="objekt" data-id="${x.id}">
-        <b>${txt(x.name)}</b>
-        <span class="n ${x.prototypen >= ZIEL ? "voll" : ""}">${x.prototypen}/${ZIEL}</span>
-      </span>`).join("")}</div>
+    <div class="btitel"><span>OBJEKTE</span><span>${ks.filter(x => !x.negativ).length}${ks.some(x => x.negativ) ? " + Hintergrund" : ""}</span></div>
+    <div class="ok-karten">${ks.map(karte).join("")}</div>
     <div class="zeile" style="margin-top:10px">
-      <input class="eingabe" id="neuName" type="text" placeholder="Neues Objekt">
-      <button class="mini" style="flex:0 0 auto" data-tat="objekt_neu">+</button></div>
+      <input class="eingabe" id="neuName" type="text" placeholder="Neues Objekt, z. B. Schraube M6">
+      <button class="mini an" style="flex:0 0 auto" data-tat="objekt_neu" title="Objekt anlegen">+ Anlegen</button></div>
     ${ks.some(x => x.negativ) ? "" : `<div class="warnzeile">
-      Keine Negativklasse. Ohne sie meldet der Chip auch bei leerem Band ein Objekt.
+      Noch kein Hintergrund. Ohne ihn meldet die Anlage auch bei leerer Fläche ein Objekt.
       <button class="mini" style="margin-top:6px" data-tat="objekt_neu"
-              data-negativ="1">„nichts / Störteil" anlegen</button></div>`}
+              data-negativ="1">Hintergrund anlegen</button></div>`}
   </div>`;
 
   if (k) {
     const felder = DATEIEN.map(d => `
       <div class="feld" data-tat="foto" data-datei="${txt(d)}">
         <img src="/api/prototyp?datei=${encodeURIComponent(d)}" alt="">
-        <span class="weg" data-tat="foto_weg" data-datei="${txt(d)}">×</span></div>`);
+        <span class="weg" data-tat="foto_weg" data-datei="${txt(d)}" title="Foto löschen (rückgängig machbar)">×</span></div>`).filter((_, i) => !FOTO_WEG.has(DATEIEN[i]));
     for (let i = DATEIEN.length; i < ZIEL; i++) felder.push('<div class="frei"></div>');
 
     aus += `<div class="block">
-      <div class="btitel"><span>LERNFENSTER · ${txt(k.name)}</span>
-        <span>${k.prototypen} Fotos · ${k.gesamt_mit_augmentierung} Beispiele</span></div>
+      <div class="btitel"><span>FOTOS · ${txt(k.name)}</span>
+        <span>${k.prototypen}/${ZIEL}${k.prototypen > ZIEL ? "+" : ""}</span></div>
       <div id="raster">${felder.join("")}</div>
-      <div class="knopfreihe" style="margin-top:11px">
-        <button class="haupttaste" style="flex:1" data-tat="aufnehmen">Foto aufnehmen</button>
-      </div>
+      <div class="ok-hinweis">Teil in den Rahmen legen, dann Leertaste oder oben „Foto aufnehmen“. Lage zwischen den Fotos ändern.
+        <span>${k.gesamt_mit_augmentierung} Lernbeispiele mit Varianten</span></div>
       ${LETZTE_PRUEFUNG && LETZTE_PRUEFUNG.maengel && LETZTE_PRUEFUNG.maengel.length
         ? `<div class="warnzeile">Letztes Foto: ${LETZTE_PRUEFUNG.maengel.map(txt).join(", ")}
              · Schärfe ${LETZTE_PRUEFUNG.schaerfe}, Fläche ${LETZTE_PRUEFUNG.flaechenanteil} %</div>`
@@ -8561,9 +8783,7 @@ function spalteAnlernen() {
       <span>${plan.beispiele || 0} Beispiele</span></div>
     ${(plan.warnungen || []).length
       ? `<div class="kasten warn">${plan.warnungen.map(txt).join("<br>")}</div>` : ""}
-    <button class="haupttaste" style="width:100%" data-tat="training_dialog"
-            ${plan.bereit ? "" : "disabled"}>Training starten …</button>
-    ${plan.bereit ? `<div class="hinweis">Der Dialog zeigt vorher, was hingeht,
+    ${plan.bereit ? `<div class="hinweis">Oben rechts „Training …“ öffnet den Dialog. Er zeigt vorher, was hingeht,
       und lässt die Wahl zwischen den beiden Wegen:<br>
       <b style="color:var(--akzent)">Chip-Lernen</b> — Sekunden, erkennt
       <i>ein</i> Teil im Fenster.<br>
@@ -9039,8 +9259,17 @@ function zeichneFuss() {
     ? `${b.bild_breite}×${b.bild_hoehe}` : "–";
   if (cF) cF.textContent = (m.fps || 0).toFixed(1);
   const cM = $("cModell");
-  if (cM && h.nps) cM.innerHTML = `Verbund + M3 · ${h.nps} NPs
-    <em class="aktivChip">AKTIV</em>`;
+  if (cM) {
+    // Klartext (1.9.56): was der Nutzer wissen will, ist "was kann die Anlage
+    // gerade erkennen" - die Technik steht im Tooltip.
+    const LB = (Z.lernen || {}).bericht;
+    const n = LB && LB.ok ? (LB.klassen || []).filter(x => !/nichts|stör|hintergrund/i.test(String(x))).length : 0;
+    const t = trAb(n ? (n === 1 ? "1 Objekt" : n + " Objekte") : "noch nichts");
+    if (cM.textContent !== t) cM.textContent = t;
+    cM.className = n ? "" : "leise";
+    cM.parentElement.title = (h.nps ? `Verbund + M3 · ${h.nps} NPs` + (h.karten > 1 ? ` · ${h.karten} Karten` : "") : "kein Chip")
+      + " — Klick: Anlernen";
+  }
   const vK = $("vKamera");
   if (vK) vK.textContent = `KAMERA · ${b.bild_breite || "–"}×${b.bild_hoehe
     || "–"} · ${(m.fps || 0).toFixed(1)} FPS`;
@@ -9057,7 +9286,8 @@ function zeichneFuss() {
     lk.classList.toggle("an", !!LI.aktiv);
   }
   const ak = $("armKnopf");
-  if (ak) ak.hidden = !Z.arm_uno;
+  // Arm nur im Linienbetrieb (1.9.56) - dort wird er gebraucht.
+  if (ak) ak.hidden = !Z.arm_uno || !(ANSICHT_LINIE && MODUS === "betreiben");
   if (lp) {
     const wort = { warte: "WARTE AUF ANLIEFERUNG", band: "BAND LÄUFT",
                    lauf: "BAND LÄUFT", pruefen: "PRÜFT · BAND HÄLT",
@@ -9123,27 +9353,200 @@ function zeichneFuss() {
 // Anzeige im Auge-Menue, Objekte im Lernmodus - hier nur, was man
 // wissen (Hardware, Diagnose) oder selten tun (Wartung) will.
 const ABSCHNITTE = [
+  ["allgemein", "Allgemein"], ["kamera", "Kamera"], ["erkennung", "Erkennung"], ["programme", "Prüfprogramme"], ["eaio", "Ein-/Ausgänge"], ["sps", "SPS / Modbus"], ["benutzer", "Benutzer"],
   ["hardware", "Hardware"], ["diagnose", "Diagnose"], ["wartung", "Wartung"],
 ];
 // Alte Abschnittsnamen aus Verweisen (Stoerungen, Reihe 2) umlenken.
 const ABSCHNITT_ALIAS = { modell: "hardware", ueber: "hardware",
-  messen: "diagnose", daten: "wartung", aufnahme: "hardware",
-  anzeige: "hardware", objekte: "hardware" };
+  messen: "diagnose", daten: "wartung", aufnahme: "kamera",
+  anzeige: "allgemein", objekte: "hardware", rezepte: "programme" };
 
 function zeichneEinstellungen() {
   if ($("dEinstellungen").hidden || ruhig()) return;
   const fokus = document.activeElement;
   if (fokus && $("eInhalt").contains(fokus) && /^(INPUT|SELECT|TEXTAREA)$/.test(fokus.tagName)) return;
   $("eNav").innerHTML = ABSCHNITTE.map(([id, name]) =>
+    (id === "hardware" ? '<span class="e-trenn" aria-hidden="true"></span>' : "") +
     `<button class="${id === ABSCHNITT ? "an" : ""}" data-tat="abschnitt"
              data-id="${id}">${txt(name)}</button>`).join("");
   $("eInhalt").innerHTML = inhaltAbschnitt();
 }
 
+/* EINSTELLUNGEN (1.9.57): neue Reiter */
+function eWahl(tat, wert, aktiv, text) {
+  return `<button class="mini ${aktiv ? "an" : ""}" data-tat="${tat}" data-wert="${wert}" aria-pressed="${!!aktiv}">${text}</button>`;
+}
+function abschnittAllgemein() {
+  const P = ((Z.bereich || {}).pruef) || {};
+  const look = skinAktiv();
+  return `<h3>Allgemein</h3>
+    <div class="e-zeile"><div><b>Sprache</b><span>Oberfläche und Meldungen</span></div>
+      <div class="e-wahl">${eWahl("sprache_setzen", "de", SPRACHE === "de", "Deutsch")}${eWahl("sprache_setzen", "en", SPRACHE === "en", "English")}</div></div>
+    <div class="e-zeile"><div><b>Darstellung</b><span>Farbschema der Oberfläche</span></div>
+      <div class="e-wahl">${eWahl("look_setzen", "spikingedge", look === "spikingedge", "SpikingEdge")}${eWahl("look_setzen", "industrie", look === "industrie", "Hell")}${eWahl("look_setzen", "magna", look === "magna", "Magna")}</div></div>
+    <div class="e-zeile"><div><b>Ton bei Unbekannt / Ausschuss</b><span>Kurzer Hinweiston nach der Prüfung</span></div>
+      <div class="e-wahl">${eWahl("pruef_ton_setzen", "1", PRUEF_TON, "An")}${eWahl("pruef_ton_setzen", "0", !PRUEF_TON, "Aus")}</div></div>
+    ${STATIONAER() ? `<div class="e-zeile"><div><b>Prüf-Auslöser</b><span>Hand: Knopf oder Leertaste · Auto: jede neue, still liegende Szene</span></div>
+      <div class="e-wahl">${eWahl("pruef_ausloeser", "hand", !P.ausloeser || P.ausloeser === "hand", "Hand")}${eWahl("pruef_ausloeser", "auto", P.ausloeser === "auto", "Auto")}${eWahl("pruef_ausloeser", "extern", P.ausloeser === "extern", "Extern")}</div></div>` : ""}
+    <div class="e-zeile"><div><b>Erste Schritte</b><span>Die geführte Einrichtung erneut öffnen</span></div>
+      <div class="e-wahl"><button class="mini" data-tat="erststart">Öffnen</button></div></div>`;
+}
+function abschnittErkennung() {
+  const P = ((Z.bereich || {}).pruef) || {};
+  const sw = P.schwelle == null ? 0 : Math.round(P.schwelle * 100);
+  return `<h3>Erkennung</h3>
+    <div class="e-hinweis">Dieselben Werte wie unter Prüfung › Prüfdetails › Prüfparameter.</div>
+    <div class="pu-schwelle e-regler">
+      <label>Konfidenzschwelle</label>
+      <input type="range" data-regler="pruef_schwelle" min="0" max="100" step="1" value="${sw}"
+             title="Darunter gilt ein benanntes Teil als UNBEKANNT (0 = aus)">
+      <b>${P.schwelle == null ? "aus" : sw + " %"}</b>
+      <label>Ziel Unbek.-Quote</label>
+      <input type="range" data-regler="pruef_ziel" min="1" max="50" step="1" value="${Math.round(P.unbekannt_ziel || 10)}"
+             title="Ab dieser Unbekannt-Quote wird Nachlernen empfohlen">
+      <b>${Math.round(P.unbekannt_ziel || 10)} %</b>
+      ${STATIONAER() ? `<label>Bilder mitteln</label>
+      <input type="range" data-regler="pruef_mehrbild" min="1" max="16" step="1" value="${P.mehrbild_anzahl || 1}"
+             title="Stehende Szene über N Bilder mitteln: weniger Rauschen (1 = aus)">
+      <b>${(P.mehrbild_anzahl || 1) > 1 ? P.mehrbild_anzahl + " Bilder" : "aus"}</b>` : ""}
+    </div>
+    <div class="e-erkl"><b>Konfidenzschwelle</b> — wie sicher sich die Anlage sein muss, bevor sie einen Namen nennt. Höher = öfter „unbekannt“, dafür seltener falsch.<br>
+      <b>Ziel Unbekannt-Quote</b> — liegt der Anteil unbekannter Teile darüber, schlägt die Anlage Nachlernen vor.</div>`;
+}
+let RZ_LETZT = null, RZ_GELADEN = 0;
+function abschnittProgramme() {
+  if (Date.now() - RZ_GELADEN > 5000) { RZ_GELADEN = Date.now(); rezepteLaden(); }
+  const alt = Object.keys(Z.presets || {});
+  return `<h3>Prüfprogramme</h3>` + rezepteHtml(RZ_LETZT || {}) + (alt.length ? `
+    <h4>Ältere Kamera-Einstellungen</h4>
+    <div class="e-hinweis">Aus früheren Versionen (nur Kamera + Fenster). Neu sichern geht als Prüfprogramm.</div>
+    <div class="knopfreihe">${alt.map(n => `<button class="mini" data-tat="preset_laden" data-name="${txt(n)}">${txt(n)}</button>`).join("")}</div>` : "");
+}
+/* EAIO (1.9.59): digitale Ein-/Ausgaenge - Treiber, Belegung, Lampen, Test. */
+let EAIO = null, EAIO_GELADEN = 0;
+async function eaioLaden() { try { EAIO = await hole("/api/eaio"); } catch (e) {} if (ABSCHNITT === "eaio") zeichneEinstellungen(); }
+function abschnittEaio() {
+  if (Date.now() - EAIO_GELADEN > 1000) { EAIO_GELADEN = Date.now(); eaioLaden(); }
+  const E = EAIO;
+  if (!E || !E.cfg) return `<h3>Ein-/Ausgänge</h3><div class="e-hinweis">Wird geladen …</div>`;
+  const c = E.cfg, tr = c.treiber, mb = c.modbus || {};
+  const NAME = { trigger: "Trigger", bereit: "Bereit", ok: "OK", nok: "NOK", fehler: "Fehler" };
+  const WAS = { trigger: "steigende Flanke löst eine Prüfung aus", bereit: "Anlage bereit, keine Störung",
+                ok: "nach der Prüfung: alles gut", nok: "nach der Prüfung: unbekannt, Ausschuss oder kein Teil", fehler: "aktive Störung" };
+  const zeile = (s, ein) => `<tr>
+      <td><i class="eio-lampe ${E.zustand[s] ? "an" : ""} ${ein ? "ein" : ""}"></i></td>
+      <td><b>${NAME[s]}</b><small><span>${ein ? "Eingang" : "Ausgang"}</span> · <span>${WAS[s]}</span></small></td>
+      <td>${tr === "modbus"
+        ? `<input class="eingabe eio-feld" data-eio="adr" data-signal="${s}" type="number" min="0" value="${(mb.adressen || {})[s] ?? ""}" title="${ein ? "Discrete Input" : "Coil"}">`
+        : `<input class="eingabe eio-feld" data-eio="pin" data-signal="${s}" type="number" min="0" max="27" value="${(c.pins || {})[s] ?? ""}" title="GPIO (BCM)">`}</td>
+      <td><label class="eio-inv"><input type="checkbox" data-eio="inv" data-signal="${s}" ${(c.invertiert || {})[s] ? "checked" : ""}> invertiert</label></td>
+      <td><button class="mini" data-tat="eaio_test" data-signal="${s}">${ein ? "Auslösen" : "Test 1 s"}</button></td></tr>`;
+  const P = ((Z.bereich || {}).pruef) || {};
+  return `<h3>Ein-/Ausgänge</h3>
+    <div class="e-zeile"><div><b>Treiber</b><span>${E.simuliert
+        ? (E.fehler ? `Simulation — ${txt(E.fehler)}` : "Simulation: keine Hardware angesprochen, alles hier sichtbar")
+        : (tr === "gpio" ? "GPIO aktiv (gpiozero)" : `Modbus TCP aktiv · ${txt(mb.host || "")}:${mb.port}`)}</span></div>
+      <div class="e-wahl">${eWahl("eaio_treiber", "sim", tr === "sim", "Simulation")}${eWahl("eaio_treiber", "gpio", tr === "gpio", "GPIO")}${eWahl("eaio_treiber", "modbus", tr === "modbus", "Modbus TCP")}</div></div>
+    ${tr === "modbus" ? `<div class="e-zeile eio-mb"><div><b>Modbus-Gerät</b><span>I/O-Modul im Netz: Coils = Ausgänge, Discrete Inputs = Eingänge</span></div>
+      <div class="e-wahl"><input class="eingabe" data-eio="host" value="${txt(mb.host || "")}" placeholder="IP-Adresse" style="width:140px">
+        <input class="eingabe" data-eio="port" type="number" value="${mb.port || 502}" style="width:72px" title="Port">
+        <input class="eingabe" data-eio="einheit" type="number" value="${mb.einheit || 1}" style="width:56px" title="Unit-ID"></div></div>` : ""}
+    <table class="eio-tab"><thead><tr><th></th><th>Signal</th><th>${tr === "modbus" ? "Adresse" : "GPIO"}</th><th></th><th></th></tr></thead>
+      <tbody>${E.eingaenge.map(s => zeile(s, true)).join("")}${E.ausgaenge.map(s => zeile(s, false)).join("")}</tbody></table>
+    <div class="e-zeile"><div><b>OK / NOK</b><span>Puls: kurz an · Halten: bis zur nächsten Prüfung</span></div>
+      <div class="e-wahl">${eWahl("eaio_modus", "puls", c.modus === "puls", "Puls")}${eWahl("eaio_modus", "halten", c.modus === "halten", "Halten")}
+        <input class="eingabe" data-eio="puls_ms" type="number" min="20" max="5000" value="${c.puls_ms}" style="width:76px" title="Pulslänge in ms"> ms</div></div>
+    <div class="knopfreihe" style="margin:10px 0"><button class="mini an" data-tat="eaio_uebernehmen">Belegung übernehmen</button></div>
+    ${STATIONAER() ? `<div class="e-hinweis">Der Trigger löst nur aus, wenn der Prüf-Auslöser auf Extern steht.
+      ${P.ausloeser !== "extern" ? `<button class="lu-link" data-tat="pruef_ausloeser" data-wert="extern">Auf Extern stellen</button>` : ""}</div>`
+      : `<div class="e-hinweis">Linienbetrieb: OK/NOK je gebuchtem Teil; der Trigger-Eingang wird hier nicht gebraucht (die Linie hat eigene Sensorik).</div>`}
+    <div class="e-erkl"><b>Anschluss:</b> Pi-GPIO verträgt nur 3,3 V — 24-V-Signale immer über Optokoppler, Lasten über Relais oder Transistor.
+      GPIO 18 (Bandrelais), I²C (2/3) und 0/1 sind gesperrt. Nichts hiervon ist eine Sicherheitsfunktion (SAFETY.md).</div>
+    <h4>Zuletzt</h4><div class="eio-log">${(E.ereignisse || []).length ? E.ereignisse.map(e => `<div><span>${txt(e.zeit)}</span>${txt(e.text)}</div>`).join("") : '<div class="leise">noch nichts</div>'}</div>`;
+}
+function eaioFormular() {
+  const box = $("eInhalt"), c = {}; if (!box) return c;
+  const q = sel => [...box.querySelectorAll(sel)];
+  const pins = {}, adr = {}, inv = {};
+  q('[data-eio="pin"]').forEach(i => { pins[i.dataset.signal] = i.value === "" ? null : +i.value; });
+  q('[data-eio="adr"]').forEach(i => { adr[i.dataset.signal] = +i.value || 0; });
+  q('[data-eio="inv"]').forEach(i => { inv[i.dataset.signal] = i.checked; });
+  if (Object.keys(pins).length) c.pins = pins;
+  c.invertiert = inv;
+  const m = {}; const v = k => { const e = box.querySelector(`[data-eio="${k}"]`); return e ? e.value : null; };
+  if (v("host") != null) { m.host = v("host"); m.port = +v("port") || 502; m.einheit = +v("einheit") || 1; }
+  if (Object.keys(adr).length) m.adressen = adr;
+  if (Object.keys(m).length) c.modbus = m;
+  if (v("puls_ms") != null) c.puls_ms = +v("puls_ms") || 200;
+  return c;
+}
+async function eaioSenden(extra) {
+  try { EAIO = await hole("/api/eaio", Object.assign({ aktion: "einstellen" }, eaioFormular(), extra || {})); } catch (e) {}
+  if (EAIO && EAIO.ok === false) { MELDUNG = EAIO.grund; setTimeout(() => { MELDUNG = ""; }, 4000); }
+  zeichneEinstellungen();
+}
+/* SPS (1.9.61): Modbus-TCP-Server - Schalter, Live-Register, Programmnummern. */
+let SPS = null, SPS_GELADEN = 0;
+async function spsLaden() { try { SPS = await hole("/api/sps"); } catch (e) {} if (ABSCHNITT === "sps") zeichneEinstellungen(); }
+function abschnittSps() {
+  if (Date.now() - SPS_GELADEN > 1000) { SPS_GELADEN = Date.now(); spsLaden(); }
+  const S = SPS;
+  if (!S || !S.cfg) return `<h3>SPS / Modbus</h3><div class="e-hinweis">Wird geladen …</div>`;
+  const c = S.cfg, reg = S.register || [];
+  const NAMEN = ["Status-Bits", "Urteil (1 gut · 2 unbek. · 3 Aussch. · 4 leer)", "Objekt-ID + 1", "Konfidenz ‰", "Teile", "Zähler gesamt (low)",
+    "Zähler gesamt (high)", "gut", "unbekannt", "Ausschuss", "Programm-Nr.", "Lebenszähler", "Ergebnis-Sequenz"];
+  return `<h3>SPS / Modbus</h3>
+    <div class="e-hinweis">SE Inspect als Modbus-TCP-Server: die SPS liest Ergebnis und Zähler und schreibt Befehle. Modbus hat keine Anmeldung — nur im abgeschotteten Maschinennetz einschalten.</div>
+    <div class="e-zeile"><div><b>Modbus-Server</b><span>${S.aktiv ? `läuft auf Port ${S.port} · ${S.verbindungen} Verbindungen · ${S.anfragen} Anfragen` : (S.fehler ? txt(S.fehler) : "aus")}</span></div>
+      <div class="e-wahl">${eWahl("sps_an", "1", c.an, "An")}${eWahl("sps_an", "0", !c.an, "Aus")}</div></div>
+    <div class="e-zeile"><div><b>Port und Schreibrecht</b><span>1502 braucht keine Root-Rechte · „nur lesen“ sperrt Befehle der SPS</span></div>
+      <div class="e-wahl"><input class="eingabe" data-sps="port" type="number" min="1" max="65535" value="${c.port || 1502}" style="width:84px">
+        ${eWahl("sps_lesen", "0", !c.nur_lesen, "lesen + schreiben")}${eWahl("sps_lesen", "1", !!c.nur_lesen, "nur lesen")}
+        <button class="mini" data-tat="sps_port">Übernehmen</button></div></div>
+    ${S.letzter_befehl ? `<div class="e-hinweis">Letzter Befehl der SPS: ${txt(S.letzter_befehl)}</div>` : ""}
+    <h4>Eingangsregister (FC 4 · gespiegelt ab Halteregister 100)</h4>
+    <table class="eio-tab"><thead><tr><th>Adr.</th><th>Inhalt</th><th>Wert</th></tr></thead><tbody>
+      ${NAMEN.map((n, i) => `<tr><td>${i}</td><td>${n}</td><td><b>${reg[i] != null ? (i === 0 ? reg[i].toString(2).padStart(6, "0") : reg[i]) : "–"}</b></td></tr>`).join("")}
+    </tbody></table>
+    <div class="e-erkl"><b>Befehle:</b> Halteregister 0 ← 1 = Prüfung auslösen, 2 = Zähler zurücksetzen · Halteregister 1 ← Programm-Nr. laden · Coil 0 ← 1 = Prüfung auslösen.
+      Status-Bits: b0 bereit · b1 Prüfung läuft · b2 Störung · b3 letzte OK · b4 letzte NOK · b5 ohne Chip (simuliert). Neue Ergebnisse erkennt die SPS an der Ergebnis-Sequenz.</div>
+    <h4>Programmnummern</h4>
+    <div class="eio-log">${(S.programme || []).length ? S.programme.map((n, i) => `<div><span>${i + 1}</span>${txt(n)}</div>`).join("") : '<div class="leise">noch keine Prüfprogramme</div>'}</div>`;
+}
+let ROLLE_GELADEN = 0;
+function abschnittBenutzer() {
+  if (Date.now() - ROLLE_GELADEN > 3000) { ROLLE_GELADEN = Date.now(); rolleLaden().then(() => { if (ABSCHNITT === "benutzer") zeichneEinstellungen(); }); }
+  const R = ROLLE, p = R.pins || {};
+  const pinZeile = (rolle, titel, text) => `<div class="e-zeile"><div><b>${titel}</b><span>${text}</span><span>${p[rolle] ? "PIN gesetzt" : "kein PIN"}</span></div>
+      <div class="e-wahl"><input class="eingabe" data-pin="${rolle}" type="password" inputmode="numeric" maxlength="8" placeholder="neuer PIN" style="width:110px">
+        <button class="mini" data-tat="rolle_pin" data-rolle="${rolle}">${p[rolle] ? "Ändern" : "Setzen"}</button></div></div>`;
+  return `<h3>Benutzer</h3>
+    <div class="e-hinweis">${R.aktiv ? "Rollen sind aktiv. Ohne Anmeldung ist die Anlage eine Bedienstation: prüfen, quittieren, Prüfprogramm laden."
+      : "Rollen sind aus — die Oberfläche ist für alle offen. Mit einem Admin-PIN wird sie ohne Anmeldung zur Bedienstation."}</div>
+    ${pinZeile("admin", "Admin", "alles, auch Benutzer und Ein-/Ausgänge")}
+    ${R.aktiv ? pinZeile("einrichter", "Einrichter", "einrichten, anlernen, Einstellungen (leer lassen = keiner)") : ""}
+    ${R.aktiv ? `<div class="e-zeile"><div><b>Automatisch abmelden</b><span>nach Minuten ohne Aktion</span></div>
+      <div class="e-wahl"><input class="eingabe" data-rolle-zeit type="number" min="1" max="480" value="${R.abmelden_min || 15}" style="width:70px">
+        <button class="mini" data-tat="rolle_zeit">Übernehmen</button></div></div>
+    <div class="e-zeile"><div><b>Rollen ausschalten</b><span>löscht alle PINs</span></div>
+      <div class="e-wahl"><button class="mini gefahr" data-tat="rollen_aus">Ausschalten</button></div></div>` : ""}
+    <h4>Änderungsprotokoll</h4>
+    <div class="eio-log">${(R.protokoll || []).length ? R.protokoll.map(e => `<div><span>${txt(e.zeit.slice(5))}</span><span>${txt(e.rolle)}</span>${txt(e.weg.replace("/api/", ""))} ${txt(e.inhalt === "{}" ? "" : e.inhalt)}</div>`).join("")
+      : '<div class="leise">noch keine Einträge</div>'}</div>`;
+}
 function inhaltAbschnitt() {
   ABSCHNITT = ABSCHNITT_ALIAS[ABSCHNITT] || ABSCHNITT;
   if (ABSCHNITT === "diagnose") return "<h3>Diagnose</h3>" + spalteMessen();
   if (ABSCHNITT === "wartung") return abschnittDaten();
+  if (ABSCHNITT === "allgemein") return abschnittAllgemein();
+  if (ABSCHNITT === "kamera") return `<h3>Kamera</h3>
+    <div class="e-hinweis">Schnell nachstellen geht direkt am Bild: Knopf „Kamera“ über dem Kamerabild.</div>`
+    + blockKameraEinrichten() + blockLeerbild() + (STATIONAER() ? blockMehrbild() : "");
+  if (ABSCHNITT === "erkennung") return abschnittErkennung();
+  if (ABSCHNITT === "programme") return abschnittProgramme();
+  if (ABSCHNITT === "eaio") return abschnittEaio();
+  if (ABSCHNITT === "benutzer") return abschnittBenutzer();
+  if (ABSCHNITT === "sps") return abschnittSps();
   // Hardware: Karten, Modell, Softwarestand - in dieser Reihenfolge.
   const h = Z.hardware || {};
   const kk = (KARTEN || {}).karten || [];
@@ -9554,8 +9957,6 @@ async function aktualisieren() {
       PROFIL = Z.profil;
       document.body.classList.toggle("stationaer", STATIONAER());
       const nl = $("navLinie"); if (nl) nl.hidden = STATIONAER();
-      const kz = document.querySelector('#seitenNav .snav[data-modus="einrichten"] span');
-      if (kz) kz.textContent = STATIONAER() ? "Kamera" : "Kamera & Zonen";
     }
     // Linien-Daten zentral cachen: faellt ein Zustandsabruf ohne sie
     // durch (Server-Race oder alter Prozess), arbeiten Grafik,
@@ -9680,9 +10081,72 @@ document.addEventListener("click", async ev => {
   const tat = el.dataset.tat;
   ev.preventDefault();
 
-  if (tat === "modus") return setzeModus(el.dataset.modus);
+  if (tat === "modus") { ablaufMenueZu(); return setzeModus(el.dataset.modus); }
+  if (tat === "ops_mehr") {
+    const m = $("opsMehr"), an = m.hidden;
+    m.hidden = !an; el.setAttribute("aria-expanded", String(an));
+    return;
+  }
+  if (tat === "erststart") { ablaufMenueZu(); $("dEinstellungen").hidden = true; erstStartZeigen(true); return; }
+  if (tat === "erststart_zu") {
+    erstStartZeigen(false);
+    try { localStorage.setItem("nbes_erststart", "zu"); } catch (e) {}
+    return;
+  }
+  if (tat === "erst_schritt") { return erstSchrittTun(el.dataset.nr); }
+  if (tat === "hilfe") { ablaufMenueZu(); $("dHilfe").hidden = false; return; }
 
   if (tat === "sprache") { spracheSetzen(SPRACHE === "en" ? "de" : "en"); return; }
+  if (tat === "anmelden") { return anmelden(); }
+  if (tat === "sps_an" || tat === "sps_lesen" || tat === "sps_port") {
+    const k = {};
+    if (tat === "sps_an") k.an = el.dataset.wert === "1";
+    if (tat === "sps_lesen") k.nur_lesen = el.dataset.wert === "1";
+    const p = $("eInhalt").querySelector('[data-sps="port"]'); if (p) k.port = +p.value || 1502;
+    const r = await hole("/api/sps", k);
+    if (r && r.ok === false && r.grund) { MELDUNG = r.grund; setTimeout(() => { MELDUNG = ""; }, 4000); }
+    SPS = r; zeichneEinstellungen(); return;
+  }
+  if (tat === "rolle") {
+    if (ROLLE.aktiv && ROLLE.rolle !== "bediener") {
+      await hole("/api/abmelden", {}); SE_TOKEN = ""; try { localStorage.removeItem("nbes_token"); } catch (e) {}
+      $("dEinstellungen").hidden = true; await rolleLaden(); return;
+    }
+    anmeldenZeigen(); return;
+  }
+  if (tat === "rolle_pin") {
+    const f = $("eInhalt").querySelector(`[data-pin="${el.dataset.rolle}"]`);
+    const r = await hole("/api/rollen", { aktion: "pin", rolle: el.dataset.rolle, pin: f ? f.value : "" });
+    if (r && r.ok === false) { MELDUNG = r.grund; setTimeout(() => { MELDUNG = ""; }, 4000); }
+    if (r && r.ok && el.dataset.rolle === "admin" && !ROLLE.aktiv) {
+      // erster Admin-PIN: gleich als Admin anmelden, sonst sperrt man sich aus
+      const a = await hole("/api/anmelden", { pin: f.value });
+      if (a && a.ok) { SE_TOKEN = a.token; try { localStorage.setItem("nbes_token", SE_TOKEN); } catch (e) {} }
+    }
+    await rolleLaden(); zeichneEinstellungen(); return;
+  }
+  if (tat === "rollen_aus") {
+    if (!await bestaetigen({ titel: "Rollen ausschalten", text: "Alle PINs löschen? Danach ist die Oberfläche wieder für alle offen.", ok: "Ausschalten" })) return;
+    await hole("/api/rollen", { aktion: "aus" }); await rolleLaden(); zeichneEinstellungen(); return;
+  }
+  if (tat === "rolle_zeit") {
+    const f = $("eInhalt").querySelector('[data-rolle-zeit]');
+    await hole("/api/rollen", { aktion: "zeit", minuten: f ? +f.value : 15 }); await rolleLaden(); zeichneEinstellungen(); return;
+  }
+  if (tat === "eaio_treiber") { return eaioSenden({ treiber: el.dataset.wert }); }
+  if (tat === "eaio_modus") { return eaioSenden({ modus: el.dataset.wert }); }
+  if (tat === "eaio_uebernehmen") { return eaioSenden({}); }
+  if (tat === "eaio_test") {
+    try { EAIO = await hole("/api/eaio", { aktion: "test", signal: el.dataset.signal }); } catch (e) {}
+    zeichneEinstellungen(); setTimeout(eaioLaden, 1100); return;
+  }
+  if (tat === "sprache_setzen") { spracheSetzen(el.dataset.wert); zeichneEinstellungen(); return; }
+  if (tat === "look_setzen") { skinSetzen(el.dataset.wert); zeichneEinstellungen(); return; }
+  if (tat === "pruef_ton_setzen") {
+    PRUEF_TON = el.dataset.wert === "1";
+    try { localStorage.setItem("nbes_pruef_ton", PRUEF_TON ? "1" : "0"); } catch (e) {}
+    LETZTE_SPALTE = ""; zeichneEinstellungen(); return;
+  }
   if (tat === "look") {
     // Oberflaeche umschalten: Industrie (ISA-101) <-> Magna (1.9.7).
     skinSetzen(LOOKS[(LOOKS.indexOf(skinAktiv()) + 1) % LOOKS.length]);
@@ -9695,10 +10159,11 @@ document.addEventListener("click", async ev => {
     return;
   }
   if (tat === "rezept_speichern") {
-    const feld = $("rzName");
+    // Das Namensfeld neben DIESEM Knopf (Dialog, Einstellungen, Einrichten, Dock).
+    const feld = (el.closest(".al-kopf,.kd-z,.block,.fenster") || document).querySelector(".rz-name");
     const name = (el.dataset.name || (feld ? feld.value : "") || "").trim();
     if (!name) { if (feld) feld.focus(); return; }
-    if (el.dataset.name && !await bestaetigen({ titel: "Rezept aktualisieren",
+    if (el.dataset.name && !await bestaetigen({ titel: "Prüfprogramm aktualisieren",
         text: `„${name}“ mit der aktuellen Einrichtung überschreiben?`,
         ok: "Überschreiben" })) return;
     try { rezepteMalen(await hole("/api/rezept_speichern", { name })); }
@@ -10145,7 +10610,7 @@ document.addEventListener("click", async ev => {
     if (!name && !negativ) { MELDUNG = "Erst einen Namen eintragen";
       zeichneErgebnis(); return; }
     const k = await hole("/api/klasse_neu",
-      { name: negativ ? "nichts / Störteil" : name, negativ });
+      { name: negativ ? "Hintergrund" : name, negativ });
     if (feld) feld.value = "";
     AKTIV = k.id; await ladeDateien(); return aktualisieren();
   }
@@ -10158,7 +10623,7 @@ document.addEventListener("click", async ev => {
   }
   if (tat === "objekt_weg") {
     const k = objekt(AKTIV); if (!k) return;
-    if (!confirm(`„${k.name}“ mit ${k.prototypen} Fotos endgültig löschen?`)) return;
+    if (!await bestaetigen({ titel: "Objekt löschen", text: `„${k.name}“ mit ${k.prototypen} Fotos endgültig löschen? Das lässt sich nicht rückgängig machen.`, ok: "Löschen" })) return;
     await hole("/api/klasse_loeschen", { id: AKTIV });
     AKTIV = 0; await ladeDateien(); return aktualisieren();
   }
@@ -10180,10 +10645,15 @@ document.addEventListener("click", async ev => {
   if (tat === "serie_start") return serieStarten();
   if (tat === "serie_stopp") { serieStoppen(); return aktualisieren(); }
   if (tat === "foto_weg") {
-    await hole("/api/prototyp_loeschen",
-      { klasse: AKTIV, datei: el.dataset.datei });
-    await ladeDateien(); return aktualisieren();
+    // 1.9.58: erst ausblenden, nach 5 s wirklich loeschen - bis dahin rueckgaengig.
+    const datei = el.dataset.datei, klasse = AKTIV;
+    FOTO_WEG.add(datei); LETZTE_SPALTE = ""; zeichneRechts();
+    rueckgaengigZeigen("Foto gelöscht", () => { FOTO_WEG.delete(datei); LETZTE_SPALTE = ""; zeichneRechts(); },
+      async () => { await hole("/api/prototyp_loeschen", { klasse, datei }); FOTO_WEG.delete(datei); await ladeDateien(); aktualisieren(); });
+    return;
   }
+  if (tat === "rueckgaengig") { if (RUECK) { const r = RUECK; RUECK = null; clearTimeout(r.timer); r.zurueck(); $("rueckToast").hidden = true; } return; }
+  if (tat === "hilfe_zu") { $("dHilfe").hidden = true; return; }
   if (tat === "foto") { window.open("/api/prototyp?datei="
     + encodeURIComponent(el.dataset.datei), "_blank"); return; }
 
@@ -10468,19 +10938,192 @@ function serieStoppen() {
 
 /* ---------- Tastatur ---------- */
 document.addEventListener("keydown", ev => {
+  if (ev.target.id === "anmPin" && ev.key === "Enter") { ev.preventDefault(); anmelden(); return; }
   if (ev.target.closest("input,textarea,select,button,summary,[contenteditable],[role='button'],[role='switch']")) return;
   if (ev.code === "Space" && MODUS === "anlernen") { ev.preventDefault(); aufnehmen(); }
   if (ev.code === "Space" && MODUS === "betreiben" && STATIONAER()) { ev.preventDefault(); pruefenJetzt(); }
   if (ev.key === "Escape") {
+    $("dAnmelden").hidden = true;
     $("dEinstellungen").hidden = true;
     $("dTraining").hidden = true;
+    $("dHilfe").hidden = true;
   }
+  if (ev.key === "?") { $("dHilfe").hidden = !$("dHilfe").hidden; }
   if (/^[1-8]$/.test(ev.key) && MODUS === "anlernen") {
     const ks = Z && Z.klassen || [];
     const k = ks[parseInt(ev.key, 10) - 1];
     if (k) { AKTIV = k.id; ladeDateien().then(aktualisieren); }
   }
 });
+
+/* ---------- ABLAUF (1.9.56): Schritte, Hauptknopf, Erste Schritte ----------
+   Ein Stand, aus dem alles abgeleitet wird: Häkchen in der Seitenleiste,
+   Nächster-Schritt-Karte, Hauptknopf rechts oben und der Assistent.     */
+// Text gleich in der aktiven Sprache setzen - sonst schreibt jeder Takt Deutsch
+// hinein und der Übersetzer muss es wieder umschreiben.
+const trAb = (x) => (typeof SPRACHE !== "undefined" && SPRACHE === "en" && uebersetzeText(x)) || x;
+function ablaufStand() {
+  const b = (Z && Z.bereich) || {}, f = (Z && Z.fortschritt) || {};
+  const LB = ((Z && Z.lernen) || {}).bericht;
+  const objekteVoll = echt().filter(k => k.prototypen >= ZIEL).length;
+  const P = b.pruef || {};
+  const zaehler = Object.values((Z && Z.zaehler) || {}).reduce((s, v) => s + (+v || 0), 0);
+  const s = {
+    scharf: (b.schaerfe || 0) >= 25,
+    leerbild: !!((b.leerbild || {})[quelleVon("haupt")]),
+    fenster: !!f.eingerichtet,
+    objekte: objekteVoll >= 2, objekteVoll,
+    gelernt: !!(LB && LB.ok),
+    // Stationaer: gebuchte Pruefungen; Linie: gezaehlte Teile der Linie.
+    geprueft: STATIONAER() ? (P.gesamt || 0) > 0 : zaehler > 0,
+  };
+  s.schritt1 = s.leerbild || s.fenster;
+  s.schritt2 = s.objekte && s.gelernt;
+  s.schritt3 = s.geprueft;
+  s.erledigt = ["scharf", "leerbild", "fenster", "objekte", "gelernt", "geprueft"].filter(k => s[k]).length;
+  return s;
+}
+/* RUECKGAENGIG (1.9.58): eine Aktion, 5 s Zeit. */
+const FOTO_WEG = new Set();
+let RUECK = null;
+function rueckgaengigZeigen(text, zurueck, ausfuehren) {
+  if (RUECK) { clearTimeout(RUECK.timer); RUECK.ausfuehren(); }
+  const t = $("rueckToast");
+  $("rueckText").textContent = text; t.hidden = false;
+  RUECK = { zurueck, ausfuehren, timer: setTimeout(() => { const r = RUECK; RUECK = null; t.hidden = true; if (r) r.ausfuehren(); }, 5000) };
+}
+function ablaufMenueZu() {
+  const m = $("opsMehr"); if (m && !m.hidden) { m.hidden = true; $("opsMehrKnopf").setAttribute("aria-expanded", "false"); }
+}
+document.addEventListener("pointerdown", ev => {
+  if (!ev.target.closest || ev.target.closest(".ops-mehr-wrap")) return;
+  ablaufMenueZu();
+}, true);
+function ablaufMalen() {
+  if (!Z) return;
+  const s = ablaufStand();
+  const fertig = { einrichten: s.schritt1, anlernen: s.schritt2, betreiben: s.schritt3 };
+  const nr = { einrichten: "1", anlernen: "2", betreiben: "3" };
+  document.querySelectorAll("#seitenNav .snav.schritt").forEach(b => {
+    const ok = !!fertig[b.dataset.modus];
+    b.classList.toggle("erledigt", ok);
+    const i = b.querySelector(".snr"), t = ok ? "✓" : nr[b.dataset.modus];
+    if (i && i.textContent !== t) i.textContent = t;
+  });
+  const ns = $("navStart");
+  if (ns) {
+    ns.hidden = s.erledigt >= 6;
+    const t = s.erledigt + "/6";
+    if ($("navStartStand").textContent !== t) $("navStartStand").textContent = t;
+  }
+  // Erststart: einmal von selbst, solange noch nichts fotografiert ist.
+  if (!ERST_GEZEIGT && Z.klassen) {
+    ERST_GEZEIGT = true;
+    let zu = false; try { zu = localStorage.getItem("nbes_erststart") === "zu"; } catch (e) {}
+    const leer = !(Z.klassen || []).some(k => k.prototypen > 0) && !s.gelernt;
+    if (!zu && leer) erstStartZeigen(true);
+  }
+  if (!$("erstStart").hidden) erstStartMalen();
+}
+let ERST_GEZEIGT = false;
+function hauptAktionSetzen() {
+  const hk = $("opsHaupt"), nk = $("opsNeben"), lk = $("linieKnopf");
+  if (!hk || !Z) return;
+  const LI = ((Z.bereich || {}).linie) || {};
+  // Linie: Knopf nur im Linienbetrieb - laeuft sie, bleibt STOPP ueberall sichtbar.
+  if (lk) lk.hidden = STATIONAER() || !(LI.aktiv || (ANSICHT_LINIE && MODUS === "betreiben"));
+  const s = ablaufStand();
+  let haupt = null, neben = null;
+  if (MODUS === "betreiben" && STATIONAER()) {
+    const teil = (Z.erkannt && (Z.erkannt.je_objekt || []).length) || 0;
+    haupt = { t: PRUEF_LAEUFT ? "Prüft …" : "PRÜFEN", tat: "pruefen", aus: PRUEF_LAEUFT || !teil,
+              title: teil ? "Alle Teile im Bild prüfen und buchen (Leertaste)" : "Kein Teil im Bild" };
+  } else if (MODUS === "anlernen") {
+    const k = objekt(AKTIV);
+    haupt = { t: "Foto aufnehmen", tat: "aufnehmen", aus: !k,
+              title: k ? `Foto von „${k.name}“ aufnehmen (Leertaste)` : "Erst ein Objekt wählen oder anlegen" };
+    const plan = Z.trainingsplan || {};
+    neben = { t: s.gelernt ? "Neu trainieren …" : "Training …", tat: "training_dialog", aus: !plan.bereit,
+              title: plan.bereit ? "Gelerntes auf den Chip bringen" : "Mindestens zwei Objekte mit Fotos nötig" };
+  } else if (MODUS === "einrichten") {
+    haupt = { t: s.leerbild ? "Leerbild neu merken" : "Leerbild merken", tat: "leerbild", art: "haupt",
+              title: "Ohne Teil im Bild: merkt sich den leeren Hintergrund" };
+    neben = { t: "Weiter: Anlernen →", tat: "modus", modus: "anlernen", title: "Schritt 2" };
+  }
+  const setze = (el, a, cls) => {
+    el.hidden = !a;
+    if (!a) return;
+    const tt = trAb(a.t);
+    if (el.textContent !== tt) el.textContent = tt;
+    el.dataset.tat = a.tat; el.disabled = !!a.aus; el.title = a.title || "";
+    if (a.art) el.dataset.art = a.art; else delete el.dataset.art;
+    if (a.modus) el.dataset.modus = a.modus; else delete el.dataset.modus;
+  };
+  setze(hk, haupt); setze(nk, neben);
+}
+function blockNaechsterSchritt() {
+  if (!Z || document.body.classList.contains("betrieb")) return "";
+  const s = ablaufStand();
+  const karte = (art, titel, text, knopf) => `<div class="block naechst ${art}">
+    <div class="ns-titel">${titel}</div><div class="ns-text">${text}</div>${knopf || ""}</div>`;
+  const geh = (m, t) => `<button class="mini an" data-tat="modus" data-modus="${m}">${t}</button>`;
+  if (MODUS === "betreiben") {
+    if (!s.gelernt) return karte("warn", "Noch nichts gelernt",
+      "Ohne gelernte Objekte findet SE Inspect Umrisse, kann sie aber nicht benennen.",
+      geh("anlernen", "Zu Schritt 2: Anlernen →"));
+    return "";
+  }
+  if (MODUS === "anlernen") {
+    if (s.schritt2) return karte("gut", "Gelernt ✓", "Die Anlage kennt deine Objekte. Weiter mit dem Prüfen.",
+      geh("betreiben", "Zu Schritt 3: Prüfen →"));
+    if (s.objekte) return karte("", "Bereit zum Lernen",
+      "Zwei oder mehr Objekte haben genug Fotos. Rechts oben „Training …“ drücken.", "");
+    return karte("", `Schritt 2 · ${s.objekteVoll}/2 Objekte fertig`,
+      `Lege mindestens zwei Objekte an und mache je ${ZIEL} Fotos — Teil in den Rahmen legen, Leertaste.` +
+      (s.schritt1 ? "" : " <i>Tipp: Erst in Schritt 1 das Leerbild merken.</i>"), "");
+  }
+  if (MODUS === "einrichten" && s.schritt1) return karte("gut", "Eingerichtet ✓",
+    "Kamera und Hintergrund passen. Weiter mit dem Anlernen.", geh("anlernen", "Zu Schritt 2: Anlernen →"));
+  return "";
+}
+/* Erste Schritte: sechs Punkte, live abgehakt, jeder mit einem Knopf. */
+const ERST_SCHRITTE = [
+  ["scharf", "Kamera scharf stellen", "Teil unter die Kamera legen, „Scharf stellen“ drücken.", "Scharf stellen"],
+  ["leerbild", "Leerbild merken", "Teil wegnehmen — die Anlage merkt sich den leeren Hintergrund.", "Leerbild merken"],
+  ["fenster", "Aufnahmefenster anpassen", "Den Rahmen so groß ziehen, dass ein Teil gut hineinpasst (Ecke ziehen oder Mausrad).", "Zum Einrichten"],
+  ["objekte", "Zwei Objekte fotografieren", `Je Objekt ${ZIEL} Fotos — in verschiedenen Lagen.`, "Zum Anlernen"],
+  ["gelernt", "Training", "Die Fotos auf den Chip bringen — dauert Sekunden.", "Training …"],
+  ["geprueft", "Erste Prüfung", "Teil auflegen und PRÜFEN drücken (oder Leertaste).", "Zum Prüfen"],
+];
+function erstStartZeigen(an) {
+  const d = $("erstStart"); if (!d) return;
+  d.hidden = !an;
+  if (an) erstStartMalen();
+}
+function erstStartMalen() {
+  const box = $("erstStartListe"); if (!box || !Z) return;
+  const s = ablaufStand();
+  const naechst = ERST_SCHRITTE.findIndex(x => !s[x[0]]);
+  const neu = ERST_SCHRITTE.map(([k, titel, text, knopf], i) => `
+    <li class="${s[k] ? "ok" : i === naechst ? "jetzt" : ""}">
+      <i>${s[k] ? "✓" : i + 1}</i>
+      <div><b>${titel}</b><span>${text}</span></div>
+      ${s[k] ? "" : `<button class="mini ${i === naechst ? "an" : ""}" data-tat="erst_schritt" data-nr="${i}">${knopf}</button>`}
+    </li>`).join("");
+  if (box.dataset.sig !== neu) { box.innerHTML = neu; box.dataset.sig = neu; }
+  const st = $("erstStartStand"); if (st) st.textContent = `${s.erledigt} von 6 erledigt`;
+}
+async function erstSchrittTun(nr) {
+  const k = ERST_SCHRITTE[+nr]; if (!k) return;
+  const ziel = { scharf: "einrichten", leerbild: "einrichten", fenster: "einrichten",
+                 objekte: "anlernen", gelernt: "anlernen", geprueft: "betreiben" }[k[0]];
+  if (MODUS !== ziel) await setzeModus(ziel);
+  if (k[0] === "scharf") { try { await hole("/api/feed_kamera", { quelle: "haupt", aktion: "af_einmal" }); } catch (e) {} kamDockSetzen(true); }
+  else if (k[0] === "leerbild") { const b = document.querySelector('#opsHaupt[data-tat="leerbild"]'); if (b) b.click(); }
+  else if (k[0] === "gelernt") { const plan = Z.trainingsplan || {}; if (plan.bereit) { erstStartZeigen(false); $("dTraining").hidden = false; return; } }
+  if (k[0] !== "leerbild" && k[0] !== "scharf") erstStartZeigen(false);
+  erstStartMalen();
+}
 
 /* ---------- OPS 2 presentation and accessibility (no API calls) ---------- */
 function opsSync() {
@@ -10489,8 +11132,7 @@ function opsSync() {
     OPS_VIEW_RESTORED = true;
     try { if (localStorage.getItem("nbes_betrieb") === "1") betriebSetzen(true, true); } catch (e) {}
   }
-  const names = { betreiben:"Erkennung", anlernen:"Objekte & Lernen",
-                  einrichten: STATIONAER() ? "Kamera" : "Kamera & Zonen" };
+  const names = { betreiben:"Prüfung", anlernen:"Anlernen", einrichten:"Einrichten" };
   const lern = (typeof LERN_MODUS === "function") && LERN_MODUS();
   $("opsPageName").textContent = lern ? "Lernzonen A / B"
     : (ANSICHT_LINIE && MODUS === "betreiben") ? "Linienbetrieb"
@@ -10516,6 +11158,7 @@ function opsSync() {
   const production = MODUS === "betreiben";
   $("opsPaneTabs").hidden = !production;
   $("opsAnalysisButton").hidden = !production;
+  try { hauptAktionSetzen(); ablaufMalen(); } catch (e) {}
   document.body.classList.toggle("ops-production", production);
   document.body.classList.toggle("ops-diagnostics", OPS_PANE === "diagnose");
   const observation = $("opsObservation");
@@ -10687,6 +11330,7 @@ function opsInit() {
     }
   }, true);
   setInterval(opsSync, 1000);
+  rolleLaden(); setInterval(rolleLaden, 10000);
   opsSync();
 }
 

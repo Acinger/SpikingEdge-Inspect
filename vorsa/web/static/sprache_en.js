@@ -380,4 +380,156 @@ Object.assign(window.SPRACHEN.en, {
   "Leerbild: nicht möglich": "Empty image: not possible", "Leeres Band merken: danach zählt alles als Teil, was sich vom leeren Band unterscheidet": "Record the empty belt: afterwards anything that differs from the empty belt counts as a part", "Kamera: Bild, Farbe, Fenster, Leerbild": "Camera: image, colour, window, empty image"
 });
 
+/* ---- Nachtrag 11 (1.9.56 Ablauf) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Ablauf": "Workflow", "Anlernen": "Teach", "Lernen": "Learn", "kein Chip — Klick: Anlernen": "no chip — click: Teach", "{} — Klick: Anlernen": "{} — click: Teach", "Erste Schritte": "First steps", "Gelernt": "Learned",
+  "noch nichts": "nothing yet", "1 Objekt": "1 object", "{} Objekte": "{} objects",
+  "Weitere Aktionen": "More actions", "Auslöser": "Trigger", "Prüft …": "Inspecting …",
+  "Leerbild neu merken": "Record empty image again", "Weiter: Anlernen →": "Next: Teach →",
+  "Lernen …": "Learn …", "Neu lernen …": "Learn again …", "Bild 90° drehen": "Rotate image 90°",
+  "Schritt 1: Kamera, Aufnahmefenster und Leerbild einrichten": "Step 1: set up camera, capture window and empty image",
+  "Schritt 2: Objekte anlegen, fotografieren, lernen": "Step 2: create objects, take photos, learn",
+  "Schritt 3: Teile prüfen": "Step 3: inspect parts", "Schritt 2": "Step 2",
+  "Erste Schritte: geführte Einrichtung": "First steps: guided setup", "Anlernen öffnen": "Open Teach",
+  "Alle Teile im Bild prüfen und buchen (Leertaste)": "Inspect and log all parts in the image (space bar)",
+  "Kein Teil im Bild": "No part in the image", "Erst ein Objekt wählen oder anlegen": "Select or create an object first",
+  "Gelerntes auf den Chip bringen": "Put what was learned onto the chip",
+  "Mindestens zwei Objekte mit Fotos nötig": "At least two objects with photos needed",
+  "Ohne Teil im Bild: merkt sich den leeren Hintergrund": "With no part in view: records the empty background",
+  "Noch nichts gelernt": "Nothing learned yet",
+  "Ohne gelernte Objekte findet SE Inspect Umrisse, kann sie aber nicht benennen.": "Without learned objects SE Inspect finds outlines but cannot name them.",
+  "Zu Schritt 2: Anlernen →": "To step 2: Teach →", "Zu Schritt 3: Prüfen →": "To step 3: Inspect →",
+  "Gelernt ✓": "Learned ✓", "Die Anlage kennt deine Objekte. Weiter mit dem Prüfen.": "The cell knows your objects. Continue with inspecting.",
+  "Bereit zum Lernen": "Ready to learn",
+  "Zwei oder mehr Objekte haben genug Fotos. Rechts oben „Lernen …“ drücken.": "Two or more objects have enough photos. Press “Learn …” at the top right.",
+  "Schritt 2 · {}/2 Objekte fertig": "Step 2 · {}/2 objects done",
+  "Lege mindestens zwei Objekte an und mache je {} Fotos — Teil in den Rahmen legen, Leertaste.": "Create at least two objects and take {} photos of each — place the part in the frame, press space.",
+  "Tipp: Erst in Schritt 1 das Leerbild merken.": "Tip: record the empty image in step 1 first.",
+  "Eingerichtet ✓": "Set up ✓", "Kamera und Hintergrund passen. Weiter mit dem Anlernen.": "Camera and background are fine. Continue with teaching.",
+  "Kamera scharf stellen": "Focus the camera", "Teil unter die Kamera legen, „Scharf stellen“ drücken.": "Place a part under the camera, press “Focus”.",
+  "Scharf stellen": "Focus", "Teil wegnehmen — die Anlage merkt sich den leeren Hintergrund.": "Remove the part — the cell records the empty background.",
+  "Aufnahmefenster anpassen": "Adjust the capture window",
+  "Den Rahmen so groß ziehen, dass ein Teil gut hineinpasst (Ecke ziehen oder Mausrad).": "Size the frame so a part fits comfortably (drag a corner or use the mouse wheel).",
+  "Zum Einrichten": "To setup", "Zwei Objekte fotografieren": "Photograph two objects",
+  "Je Objekt {} Fotos — in verschiedenen Lagen.": "{} photos per object — in different positions.", "Zum Anlernen": "To teaching",
+  "Die Fotos auf den Chip bringen — dauert Sekunden.": "Put the photos onto the chip — takes seconds.",
+  "Erste Prüfung": "First inspection", "Teil auflegen und PRÜFEN drücken (oder Leertaste).": "Place a part and press INSPECT (or the space bar).",
+  "Zum Prüfen": "To inspecting", "{} von 6 erledigt": "{} of 6 done",
+  "Alles hakt sich von selbst ab. Du kannst jeden Punkt auch später machen.": "Everything ticks itself off. You can do any step later.",
+  "Schließen — jederzeit wieder über „Erste Schritte“": "Close — reopen any time via “First steps”"
+});
+
+/* ---- Nachtrag 12 (1.9.57 Einstellungen, Prüfprogramme) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Einstellungen": "Settings", "Allgemein": "General", "Erkennung": "Recognition", "Prüfprogramme": "Jobs", "Programm": "Job",
+  "Einstellungen: Allgemein, Kamera, Erkennung, Prüfprogramme": "Settings: general, camera, recognition, jobs",
+  "Prüfprogramme: Einrichtung je Produkt, Umrüsten per Auswahl": "Jobs: setup per product, changeover by selection",
+  "Prüfprogramme öffnen": "Open jobs", "Sprache": "Language", "Oberfläche und Meldungen": "Interface and messages",
+  "Darstellung": "Appearance", "Farbschema der Oberfläche": "Colour scheme", "Hell": "Light",
+  "Ton bei Unbekannt / Ausschuss": "Sound on unknown / reject", "Kurzer Hinweiston nach der Prüfung": "Short tone after inspection",
+  "An": "On", "Aus": "Off", "Prüf-Auslöser": "Inspection trigger",
+  "Hand: Knopf oder Leertaste · Auto: jede neue, still liegende Szene": "Manual: button or space bar · Auto: every new, settled scene",
+  "Die geführte Einrichtung erneut öffnen": "Open the guided setup again", "Öffnen": "Open",
+  "Schnell nachstellen geht direkt am Bild: Knopf „Kamera“ über dem Kamerabild.": "For quick adjustments use the “Camera” button above the image.",
+  "Dieselben Werte wie unter Prüfung › Prüfdetails › Prüfparameter.": "Same values as Inspection › Inspection details › Parameters.",
+  "Konfidenzschwelle": "Confidence threshold", "Ziel Unbek.-Quote": "Target unknown rate", "Bilder mitteln": "Average frames",
+  "— wie sicher sich die Anlage sein muss, bevor sie einen Namen nennt. Höher = öfter „unbekannt“, dafür seltener falsch.": "— how sure the cell must be before it names a part. Higher = more often “unknown”, but less often wrong.",
+  "Ziel Unbekannt-Quote": "Target unknown rate",
+  "— liegt der Anteil unbekannter Teile darüber, schlägt die Anlage Nachlernen vor.": "— if the share of unknown parts exceeds it, the cell suggests re-teaching.",
+  "Ältere Kamera-Einstellungen": "Older camera settings",
+  "Aus früheren Versionen (nur Kamera + Fenster). Neu sichern geht als Prüfprogramm.": "From earlier versions (camera + window only). Save new ones as a job.",
+  "ALS PRÜFPROGRAMM SICHERN": "SAVE AS JOB", "Name, z. B. Gehäuse A": "Name, e.g. Housing A", "Sichern": "Save",
+  "Alle Prüfprogramme …": "All jobs …", "Prüfprogramme …": "Jobs …", "Prüfprogramm, z. B. Gehäuse A": "Job, e.g. Housing A",
+  "Kamera + Fenster als Prüfprogramm sichern": "Save camera + window as a job",
+  "Prüfprogramm aktualisieren": "Update job",
+  "Ein Prüfprogramm bündelt die Einrichtung für ein Produkt: Kameraeinstellungen, Aufnahmefenster, Zonen und die Arm-Sequenz. Umrüsten = Programm laden. Das Gelernte bleibt davon unberührt.": "A job bundles the setup for one product: camera settings, capture window, zones and the arm sequence. Changeover = load the job. What was learned is not affected.",
+  "Noch kein Prüfprogramm. Richte ein Produkt ein (Kamera, Fenster, Zonen, Arm-Sequenz) und speichere die Einrichtung unter einem Namen — beim nächsten Umrüsten genügt „Laden\".": "No job yet. Set up a product (camera, window, zones, arm sequence) and save the setup under a name — next changeover, just “Load”."
+});
+
+/* ---- Nachtrag 13 (1.9.58 Anlernen & Pruefen) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "OBJEKTE": "OBJECTS", "{} + Hintergrund": "{} + background", "Hintergrund": "Background", "Hintergrund · {} Fotos": "Background · {} photos",
+  "{} Fotos · bereit": "{} photos · ready", "noch {} Fotos": "{} more photos", "noch keine Fotos": "no photos yet", "Objekt wählen": "Select object",
+  "Hintergrund: leere Fläche, Unterlage, Störteile — damit die Anlage auch „nichts“ sagen kann": "Background: empty surface, base, foreign parts — so the cell can also say “nothing”",
+  "Neues Objekt, z. B. Schraube M6": "New object, e.g. screw M6", "+ Anlegen": "+ Add", "Objekt anlegen": "Add object",
+  "Noch kein Hintergrund. Ohne ihn meldet die Anlage auch bei leerer Fläche ein Objekt.": "No background yet. Without it the cell reports an object even on an empty surface.",
+  "Hintergrund anlegen": "Add background", "FOTOS · {}": "PHOTOS · {}",
+  "Teil in den Rahmen legen, dann Leertaste oder oben „Foto aufnehmen“. Lage zwischen den Fotos ändern.": "Place the part in the frame, then press space or “Take photo” at the top. Change its position between photos.",
+  "{} Lernbeispiele mit Varianten": "{} learning examples with variants",
+  "Foto löschen (rückgängig machbar)": "Delete photo (can be undone)", "Foto gelöscht": "Photo deleted", "Rückgängig": "Undo",
+  "Live-Vorschau": "Live preview", "Was die Kamera gerade sieht — gezählt wird erst beim Prüfen": "What the camera sees right now — counted only when inspecting",
+  "Gebuchte Prüfungen": "Logged inspections", "ⓘ Kein Umriss gefunden · Urteil aus dem ganzen Fenster": "ⓘ No outline found · verdict from the whole window",
+  "Die Geometrie fand keinen Umriss — das Urteil stammt vom ganzen Fenster, darum keine Objektrahmen.": "Geometry found no outline — the verdict comes from the whole window, hence no object frames.",
+  "Objekt löschen": "Delete object", "Löschen": "Delete",
+  "„{}“ mit {} Fotos endgültig löschen? Das lässt sich nicht rückgängig machen.": "Permanently delete “{}” with {} photos? This cannot be undone.",
+  "Tastenkürzel": "Keyboard shortcuts", "Tastenkürzel  ?": "Shortcuts  ?", "Leertaste": "Space",
+  "Prüfen (Schritt 3) · Foto aufnehmen (Schritt 2)": "Inspect (step 3) · take photo (step 2)", "Objekt wählen (Schritt 2)": "Select object (step 2)",
+  "Mausrad": "Mouse wheel", "über dem Rahmen: Aufnahmefenster größer/kleiner": "over the frame: capture window larger/smaller",
+  "Rechtsklick": "Right-click", "im Bild: Anzeige und Aktionen": "in the image: display and actions", "Fenster schließen": "Close window", "Esc": "Esc", "diese Hilfe": "this help",
+  "Oben rechts „Lernen …“ öffnet den Dialog. Er zeigt vorher, was hingeht, und lässt die Wahl zwischen den beiden Wegen:": "“Learn …” at the top right opens the dialog. It shows beforehand what goes in and lets you choose between the two paths:"
+});
+
+/* ---- Nachtrag 14 (1.9.59 Ein-/Ausgaenge) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Ein-/Ausgänge": "I/O", "Wird geladen …": "Loading …", "Treiber": "Driver", "Simulation": "Simulation", "GPIO": "GPIO", "Modbus TCP": "Modbus TCP",
+  "Simulation: keine Hardware angesprochen, alles hier sichtbar": "Simulation: no hardware addressed, everything visible here",
+  "Simulation — {}": "Simulation — {}", "GPIO aktiv (gpiozero)": "GPIO active (gpiozero)",
+  "Modbus-Gerät": "Modbus device", "I/O-Modul im Netz: Coils = Ausgänge, Discrete Inputs = Eingänge": "Network I/O module: coils = outputs, discrete inputs = inputs",
+  "IP-Adresse": "IP address", "Signal": "Signal", "Adresse": "Address", "Eingang": "Input", "Ausgang": "Output",
+  "Trigger": "Trigger", "Bereit": "Ready", "OK": "OK", "NOK": "NOK", "Fehler": "Fault",
+  "steigende Flanke löst eine Prüfung aus": "rising edge triggers an inspection", "Anlage bereit, keine Störung": "cell ready, no fault",
+  "nach der Prüfung: alles gut": "after inspection: all good", "nach der Prüfung: unbekannt, Ausschuss oder kein Teil": "after inspection: unknown, reject or no part",
+  "aktive Störung": "active fault", "invertiert": "inverted", "Auslösen": "Fire", "Test 1 s": "Test 1 s",
+  "Eingang · {}": "Input · {}", "Ausgang · {}": "Output · {}",
+  "OK / NOK": "OK / NOK", "Puls: kurz an · Halten: bis zur nächsten Prüfung": "Pulse: briefly on · Hold: until the next inspection",
+  "Puls": "Pulse", "Halten": "Hold", "Pulslänge in ms": "Pulse length in ms", "Belegung übernehmen": "Apply mapping",
+  "Der Trigger löst nur aus, wenn der Prüf-Auslöser auf Extern steht.": "The trigger only fires when the inspection trigger is set to External.", "Extern": "External",
+  "Auf Extern stellen": "Set to external",
+  "Linienbetrieb: OK/NOK je gebuchtem Teil; der Trigger-Eingang wird hier nicht gebraucht (die Linie hat eigene Sensorik).": "Line mode: OK/NOK per logged part; the trigger input is not needed here (the line has its own sensing).",
+  "Anschluss:": "Wiring:",
+  "Pi-GPIO verträgt nur 3,3 V — 24-V-Signale immer über Optokoppler, Lasten über Relais oder Transistor. GPIO 18 (Bandrelais), I²C (2/3) und 0/1 sind gesperrt. Nichts hiervon ist eine Sicherheitsfunktion (SAFETY.md).": "Pi GPIO tolerates only 3.3 V — always route 24 V signals through optocouplers, loads through relays or transistors. GPIO 18 (belt relay), I²C (2/3) and 0/1 are blocked. None of this is a safety function (SAFETY.md).",
+  "Zuletzt": "Recent", "noch nichts": "nothing yet",
+  "Extern: Trigger-Eingang (Lichtschranke/SPS) löst aus — siehe Einstellungen › Ein-/Ausgänge": "External: trigger input (light barrier/PLC) fires — see Settings › I/O"
+});
+
+/* ---- Nachtrag 15 (1.9.60 Rollen) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Benutzer": "Users", "Anmelden": "Sign in", "PIN eingeben": "Enter PIN", "PIN für Admin eingeben": "Enter admin PIN", "PIN": "PIN",
+  "PIN falsch": "Wrong PIN", "Anmeldung als Einrichter nötig": "Sign in as setter needed", "Anmeldung als Admin nötig": "Sign in as admin needed",
+  "Einrichter: einrichten und anlernen · Admin: zusätzlich Benutzer und Ein-/Ausgänge": "Setter: setup and teaching · Admin: also users and I/O",
+  "Rollen sind aktiv. Ohne Anmeldung ist die Anlage eine Bedienstation: prüfen, quittieren, Prüfprogramm laden.": "Roles are active. Without sign-in the cell is an operator station: inspect, acknowledge, load jobs.",
+  "Rollen sind aus — die Oberfläche ist für alle offen. Mit einem Admin-PIN wird sie ohne Anmeldung zur Bedienstation.": "Roles are off — the interface is open to everyone. With an admin PIN it becomes an operator station without sign-in.",
+  "Admin": "Admin", "Einrichter": "Setter", "Bediener": "Operator", "alles, auch Benutzer und Ein-/Ausgänge": "everything, including users and I/O",
+  "einrichten, anlernen, Einstellungen (leer lassen = keiner)": "setup, teaching, settings (leave empty = none)",
+  "{} · PIN gesetzt": "{} · PIN set", "{} · kein PIN": "{} · no PIN", "PIN gesetzt": "PIN set", "kein PIN": "no PIN", "neuer PIN": "new PIN", "Ändern": "Change", "Setzen": "Set",
+  "Automatisch abmelden": "Automatic sign-out", "nach Minuten ohne Aktion": "after minutes without activity",
+  "Rollen ausschalten": "Turn roles off", "löscht alle PINs": "deletes all PINs", "Ausschalten": "Turn off",
+  "Alle PINs löschen? Danach ist die Oberfläche wieder für alle offen.": "Delete all PINs? Afterwards the interface is open to everyone again.",
+  "Änderungsprotokoll": "Change log", "noch keine Einträge": "no entries yet",
+  "PIN: 4 bis 8 Ziffern": "PIN: 4 to 8 digits", "Admin- und Einrichter-PIN müssen verschieden sein": "Admin and setter PIN must differ"
+});
+
+/* ---- Nachtrag 16 (1.9.61 SPS) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "SPS / Modbus": "PLC / Modbus", "Modbus-Server": "Modbus server",
+  "SE Inspect als Modbus-TCP-Server: die SPS liest Ergebnis und Zähler und schreibt Befehle. Modbus hat keine Anmeldung — nur im abgeschotteten Maschinennetz einschalten.": "SE Inspect as a Modbus TCP server: the PLC reads results and counters and writes commands. Modbus has no authentication — only enable it on an isolated machine network.",
+  "läuft auf Port {} · {} Verbindungen · {} Anfragen": "running on port {} · {} connections · {} requests", "aus": "off",
+  "Port und Schreibrecht": "Port and write access", "1502 braucht keine Root-Rechte · „nur lesen“ sperrt Befehle der SPS": "1502 needs no root rights · “read only” blocks PLC commands",
+  "lesen + schreiben": "read + write", "nur lesen": "read only", "Übernehmen": "Apply", "Letzter Befehl der SPS: {}": "Last PLC command: {}",
+  "Eingangsregister (FC 4 · gespiegelt ab Halteregister 100)": "Input registers (FC 4 · mirrored from holding register 100)",
+  "Adr.": "Addr.", "Inhalt": "Content", "Wert": "Value", "Status-Bits": "Status bits", "Urteil (1 gut · 2 unbek. · 3 Aussch. · 4 leer)": "Verdict (1 good · 2 unknown · 3 reject · 4 empty)",
+  "Objekt-ID + 1": "Object ID + 1", "Konfidenz ‰": "Confidence ‰", "Teile": "Parts", "Zähler gesamt (low)": "Total counter (low)", "Zähler gesamt (high)": "Total counter (high)",
+  "gut": "good", "unbekannt": "unknown", "Ausschuss": "Reject", "Programm-Nr.": "Job no.", "Lebenszähler": "Heartbeat", "Ergebnis-Sequenz": "Result sequence",
+  "Befehle:": "Commands:",
+  "Halteregister 0 ← 1 = Prüfung auslösen, 2 = Zähler zurücksetzen · Halteregister 1 ← Programm-Nr. laden · Coil 0 ← 1 = Prüfung auslösen. Status-Bits: b0 bereit · b1 Prüfung läuft · b2 Störung · b3 letzte OK · b4 letzte NOK · b5 ohne Chip (simuliert). Neue Ergebnisse erkennt die SPS an der Ergebnis-Sequenz.": "Holding register 0 ← 1 = trigger inspection, 2 = reset counters · holding register 1 ← load job no. · coil 0 ← 1 = trigger inspection. Status bits: b0 ready · b1 inspecting · b2 fault · b3 last OK · b4 last NOK · b5 no chip (simulated). The PLC detects new results by the result sequence.",
+  "Programmnummern": "Job numbers", "noch keine Prüfprogramme": "no jobs yet"
+});
+
+/* ---- Nachtrag 17 (1.9.62 Training) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Training …": "Train …", "Neu trainieren …": "Retrain …", "Training": "Training",
+  "Zwei oder mehr Objekte haben genug Fotos. Rechts oben „Training …“ drücken.": "Two or more objects have enough photos. Press “Train …” at the top right.",
+  "Oben rechts „Training …“ öffnet den Dialog. Er zeigt vorher, was hingeht, und lässt die Wahl zwischen den beiden Wegen:": "“Train …” at the top right opens the dialog. It shows beforehand what goes in and lets you choose between the two paths:"
+});
+
 if (window.spracheNachladen) window.spracheNachladen();

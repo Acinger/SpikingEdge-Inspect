@@ -8,7 +8,7 @@ Learns a new part on the chip in seconds, classifies by aligned silhouettes, mea
 | | |
 |---|---|
 | Licence | PolyForm Noncommercial 1.0.0 — free for non-commercial use, see `LICENSE`; commercial use: `COMMERCIAL.md` |
-| Status | **alpha** — build `1.0.0-alpha.1` (the UI footer shows the running build). Release notes: `RELEASE_NOTES.md` |
+| Status | **alpha** — build `1.0.0-alpha.2` (the UI footer shows the running build). Release notes: `RELEASE_NOTES.md` |
 | Hardware | Pi 5 (Bookworm 64-bit, kernel 6.12), 1–4 × AKD1500 on PCIe, Camera Module 3; belt and arm optional |
 | Without hardware | the full UI with synthetic scenes and a CPU stand-in for the chip |
 | Docs | [Guide (12 chapters)](https://spikingedge.com/guide/) · [Docs](https://spikingedge.com/docs/) · [Demos](https://spikingedge.com/demos/) · [Evidence](https://spikingedge.com/evidence/) |
@@ -51,6 +51,26 @@ Packages, the patched Akida PCIe driver for kernel 6.12, the runtime environment
 | `tools/patch_19xx_*.py` | every change since 1.9.37 as a reproducible patch script |
 | `SE_INSPECT_1_0_SPEC.md` | the 1.0 specification: scope, quality targets, benches, work packages |
 | `CHANGELOG.md` | what changed per build |
+
+## Digital I/O (PLC, light barrier)
+
+Settings › **I/O** maps five signals: input **Trigger** (rising edge starts an inspection when the inspection trigger is set to *External*), outputs **Ready**, **OK**, **NOK** (unknown, reject or no part) and **Fault** — pulse or hold. Three drivers, one configuration (`vorsa_daten/eaio.json`):
+
+| Driver | Hardware | Notes |
+|---|---|---|
+| Simulation (default) | none | lamps and a test button per signal in the UI |
+| GPIO | optocoupler/relay modules or GPIO relay HATs | `gpiozero` (lgpio on Pi 5); default pins BCM 17 in, 22/23/24/25 out; GPIO 18 (belt relay), 0–3 blocked |
+| Modbus TCP | network I/O module | coils = outputs, discrete inputs = inputs; built-in client, no extra library |
+
+Pi GPIO is 3.3 V only — 24 V signals go through optocouplers. None of this is a safety function (`SAFETY.md`). Bench: `python3 tools/test_eaio.py` (simulation, a mocked gpiozero and an in-process Modbus server). Without the hardware the driver falls back to simulation and shows why.
+
+## PLC interface (Modbus TCP)
+
+Off by default. Settings › **PLC / Modbus** (admin) starts a Modbus TCP server on port 1502 (optionally read-only). Input registers 0–12 (mirrored at holding registers 100+): status bits (ready, inspecting, fault, last OK, last NOK, simulated), verdict (1 good, 2 unknown, 3 reject, 4 empty), object ID + 1, confidence ‰, parts, 32-bit counter, good/unknown/reject, job no., heartbeat, **result sequence** (+1 per inspection). Commands: holding register 0 ← 1 inspect / 2 reset counters, holding register 1 ← job no., coil 0 ← inspect. Modbus has no authentication — enable it only on an isolated machine network. Bench: `python3 tools/test_sps.py`.
+
+## User roles
+
+Off by default (everything open). Setting an **admin PIN** under Settings › Users turns the UI into an operator station: without sign-in it can inspect, acknowledge, load jobs and start/stop the line. **Setter** (optional PIN) may set up and teach; **admin** also manages users and I/O. Enforced in the server, not only in the UI; every change is written to `vorsa_daten/aenderungen.jsonl` (time, role, action — never PINs). Forgot the admin PIN: delete `vorsa_daten/rollen.json` on the Pi.
 
 ## Benches
 

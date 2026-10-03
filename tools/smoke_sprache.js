@@ -23,7 +23,7 @@ const fehler = [];
   ok(w.eval("SPRACHE") === "en", "Vorgabe aus navigator.language: en");
   ok(d.documentElement.lang === "en", "html lang=en");
   const nav = [...d.querySelectorAll("#seitenNav .snav span")].map(e => e.textContent.trim());
-  ok(nav.includes("Inspection") && nav.includes("Status") && nav.includes("Messages"), "Seitenleiste englisch: " + nav.join(", "));
+  ok(nav.includes("Inspect") && nav.includes("Setup") && nav.includes("Teach") && nav.includes("Status") && nav.includes("Messages"), "Seitenleiste englisch: " + nav.join(", "));
   ok($("opsPageName").textContent === "Inspection", "Seitentitel Inspection");
   ok(d.querySelector('[data-tat="pruefen"]').textContent.trim() === "INSPECT", "PRUEFEN -> INSPECT");
   ok(/Manual: button or space bar/.test(d.querySelector(".pu-ausloeser .ltakt").getAttribute("title")), "title-Attribut uebersetzt");
@@ -32,13 +32,13 @@ const fehler = [];
   console.log("    fehlende Uebersetzungen (sichtbar beim Start):", fehlend1.length, fehlend1.slice(0, 80).join(" | "));
   // Moduswechsel: neu aufgebaute Spalten werden uebersetzt
   d.querySelector('#seitenNav .snav[data-modus="anlernen"]').click(); await warte(1200);
-  ok($("opsPageName").textContent === "Objects & learning", "Modus Lernen: Titel uebersetzt");
+  ok($("opsPageName").textContent === "Teach", "Modus Lernen: Titel uebersetzt");
   ok(!/Foto aufnehmen/.test(d.body.textContent) || /Take photo/.test(d.body.textContent), "Lernmodus-Knoepfe uebersetzt");
   d.querySelector('#seitenNav .snav[data-modus="betreiben"]').click(); await warte(800);
   // Umschalten auf Deutsch stellt alles zurueck
   $("navSprache").click(); await warte(600);
   ok(w.eval("SPRACHE") === "de" && d.documentElement.lang === "de", "Umschalter -> de");
-  ok($("opsPageName").textContent === "Erkennung", "Titel wieder Erkennung");
+  ok($("opsPageName").textContent === "Prüfung", "Titel wieder Prüfung");
   ok(d.querySelector('[data-tat="pruefen"]').textContent.trim() === "PRÜFEN", "Knopf wieder PRÜFEN");
   ok(/Hand: Knopf oder Leertaste/.test(d.querySelector(".pu-ausloeser .ltakt").getAttribute("title")), "title wieder deutsch");
   ok(w.localStorage.getItem("nbes_sprache") === "de", "Sprache gemerkt");

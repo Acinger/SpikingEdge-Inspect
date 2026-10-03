@@ -148,6 +148,8 @@ class Klasse:
             "augment": asdict(self.augment),
             "varianten_je_aufnahme": self.augment.anzahl_varianten(),
             "prototypen": len(self.prototypen),
+            # Vorschaubild fuer die Objektkarte (1.9.58): erstes Foto
+            "titelbild": (self.prototypen[0] if self.prototypen else ""),
             "gesamt_mit_augmentierung": (
                 len(self.prototypen) * self.augment.anzahl_varianten()),
         }

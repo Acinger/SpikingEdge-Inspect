@@ -11,7 +11,7 @@ jobs:
       - run: pip install "numpy<2" opencv-python-headless
       - name: Benches ohne Hardware
         run: |
-          for t in farbmaske glanz linie_fluss karten_waechter m3_head mehrbild hypothesen verteiler stationaer; do
+          for t in farbmaske glanz linie_fluss karten_waechter m3_head mehrbild hypothesen verteiler stationaer eaio sps; do
             echo "== $t"; python3 tools/test_$t.py | tail -3; done
           python3 tools/run_selftest.py --use-background --out /tmp/selftest | tail -3
       - uses: actions/setup-node@v4
@@ -23,3 +23,5 @@ jobs:
           sleep 6
           node tools/smoke_stationaer.js http://127.0.0.1:8765 | tail -2
           node tools/smoke_sprache.js http://127.0.0.1:8765 | tail -2
+          for t in ablauf einstellungen anlernen eaio rollen einrichten kamdock fenster; do
+            echo "== $t"; node tools/smoke_$t.js http://127.0.0.1:8765 | tail -1; done

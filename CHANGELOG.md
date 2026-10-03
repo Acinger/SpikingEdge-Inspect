@@ -2,6 +2,63 @@
 
 Format: Build-String (Footer) · Datum · Inhalt. Älteres siehe `PROJEKTBERICHT_ALPHA.md` Anhang B.
 
+## 1.0.0-alpha.2 (2026-10-03) · zweite öffentliche Alpha
+
+- Versionsstring `1.0.0-alpha.2`; Inhalt = 1.9.62-training (UI-Pakete 1–4, I/O, Rollen, Modbus, Training-Begriff). `RELEASE_NOTES.md`, README-Status, CITATION aktualisiert.
+
+## 1.9.62-training (2026-10-03)
+
+- Begriff: der Knopf rechts oben im Anlernen heißt **„Training …“ / „Neu trainieren …“** (EN „Train …“ / „Retrain …“) statt „Lernen …“ – er öffnet den Dialog mit beiden Wegen (Chip-Lernen, M3-Training). Auch in „Erste Schritte“ und den Hinweisen. Patch `tools/patch_1962_training.py`.
+
+## 1.9.61-sps (2026-10-03) · Industrie-Paket I2: SPS-Anbindung (Modbus TCP)
+
+- Neues Modul `vorsa/sps.py`: SE Inspect als **Modbus-TCP-Server** (eigene Implementierung, FC 1/2/3/4/5/6/16). Eingangsregister 0–12: Status-Bits (bereit, prüft, Störung, letzte OK/NOK, simuliert), Urteil, Objekt-ID, Konfidenz ‰, Teile, Zähler (32 Bit), gut/unbekannt/Ausschuss, Programm-Nr., Lebenszähler, **Ergebnis-Sequenz**. Halteregister 0 ← 1 Prüfen / 2 Zähler zurücksetzen, Halteregister 1 ← Prüfprogramm-Nr. laden, Coil 0 ← Prüfen.
+- Standard **aus**, Port 1502, Schalter „nur lesen“; Einstellen nur als Admin. Stationär: Prüfen per SPS ohne Teil → Urteil 4 (leer). Linie: Ergebnis je gebuchtem Teil.
+- Einstellungen › **SPS / Modbus**: Ein/Aus, Port, Schreibrecht, Live-Registertabelle, Programmnummern, letzter Befehl. `/api/sps`.
+- Bench `tools/test_sps.py` (Protokoll gegen Attrappe + optional gegen laufenden Server), CI erweitert. Patch `tools/patch_1961_sps.py`.
+
+## 1.9.60-rollen (2026-10-03) · Industrie-Paket I3: Benutzerrollen
+
+- Neues Modul `vorsa/rollen.py`: **Bediener / Einrichter / Admin** mit PIN (4–8 Ziffern, nur als PBKDF2-Hash mit Salz gespeichert, `rollen.json` mit Rechten 600). Ohne Admin-PIN bleibt alles offen wie bisher.
+- Prüfung **im Server** vor jeder ändernden Anfrage (403 mit Grund). Bediener: prüfen, quittieren, Prüfprogramm laden, Linie starten/stoppen. Admin-only: Benutzer, Ein-/Ausgänge, Gelerntes/Objekte/Programme löschen. Sitzungen per Token, automatische Abmeldung (Vorgabe 15 min), Sperre 30 s nach 5 Fehlversuchen.
+- **Änderungsprotokoll** (`aenderungen.jsonl`): Zeit, Rolle, Aktion, Kurzinhalt – ohne PINs.
+- Oberfläche: Schloss unten links (Anmelden/Abmelden), PIN-Dialog, eine verweigerte Aktion öffnet die Anmeldung; ohne Anmeldung reine Bedienstation. Einstellungen › **Benutzer** (PINs, Abmeldezeit, Rollen aus, Protokoll).
+- Fix: Keep-Alive-Verbindungen bekamen den Anfragekörper der vorigen Anfrage (nur mit dem neuen Zwischenspeicher, vor der Auslieferung gefunden).
+- Smoke `tools/smoke_rollen.js` (setzt am Ende alles zurück); CI erweitert. Patch `tools/patch_1960_rollen.py`.
+
+## 1.9.59-eaio (2026-10-03) · Industrie-Paket I1: digitale Ein-/Ausgänge
+
+- Neues Modul `vorsa/eaio.py`: Eingang **Trigger**, Ausgänge **Bereit / OK / NOK / Fehler**; Puls oder Halten. Treiber **Simulation** (Vorgabe), **GPIO** (gpiozero; Optokoppler-/Relaismodule, GPIO-Relais-HATs) und **Modbus TCP** (eigener Client, Coils/Discrete Inputs). Ohne Hardware fällt jeder Treiber auf Simulation zurück und nennt den Grund. GPIO 18 (Bandrelais), 0–3 gesperrt; Doppelbelegung abgelehnt.
+- Server: Prüf-Auslöser **Extern** (stationär) – Trigger-Flanke bucht eine Prüfung, ohne Teil → NOK. OK/NOK stationär je Szene, im Linienbetrieb je gebuchtem Teil. Bereit = im Prüfen ohne Alarm, Fehler = aktiver Alarm. `/api/eaio` (GET Zustand; POST `einstellen` / `test`).
+- Oberfläche: Einstellungen › **Ein-/Ausgänge** mit Treiberwahl, Pin-/Adresstabelle, Live-Lampen, Test je Signal, Puls/Halten, Protokoll. Auslöser „Extern“ in Kachel und Allgemein.
+- Bench `tools/test_eaio.py` (Simulation, nachgebautes gpiozero, Modbus-Server im Prozess), Smoke `tools/smoke_eaio.js`; CI erweitert. Patch `tools/patch_1959_eaio.py`.
+
+## 1.9.58-anlernen (2026-10-03) · UI-Paket 4
+
+- **Objektkarten** im Anlernen: Vorschaubild, Foto-Fortschritt als Balken (x/5), Ampel; „nichts / Störteil“ heißt jetzt **Hintergrund** und ist erklärt. Doppelte Knöpfe in der Spalte entfallen (Foto aufnehmen / Lernen sitzen oben rechts).
+- **Prüfen**: Urteilskarte als **Live-Vorschau** markiert, Zähler darunter als **Gebuchte Prüfungen** – kein „GUT, aber Geprüft 0“ mehr ohne Erklärung. „Urteil vom Gesamtbild“ ist eine leise Zeile; der Leerbild-Knopf erscheint nur, solange keins gemerkt ist.
+- **Löschen**: Foto mit „Rückgängig“ (5 s, gelöscht wird erst danach); Objekt über den eigenen Bestätigungsdialog statt Browser-Fenster.
+- **Tastenkürzel-Hilfe** mit „?“ (auch im „⋯“-Menü).
+- `state.py`: Klasse liefert `titelbild` (erstes Foto) für die Karte.
+- Smoke `tools/smoke_anlernen.js`; Patch `tools/patch_1958_anlernen.py`. Alle Smokes beider Profile, Rundgang (211 Schritte, 0 JS-Fehler, 0 unübersetzt) und API-Fuzz grün.
+
+## 1.9.57-einstellungen (2026-10-03) · UI-Paket 3
+
+- **Ein Einstellungsfenster** (Zahnrad „Einstellungen“ in der Seitenleiste) mit Reitern Allgemein · Kamera · Erkennung · Prüfprogramme | Hardware · Diagnose · Wartung. „Zustand“ öffnet dasselbe Fenster auf Hardware.
+- Allgemein: Sprache, Darstellung, Ton, Prüf-Auslöser, Erste Schritte. Erkennung: Konfidenzschwelle, Ziel Unbekannt-Quote, Bilder mitteln – mit Erklärung.
+- **Rezepte heißen jetzt Prüfprogramme** (EN „Jobs“; API und `rezepte.json` unverändert). „Einstellung sichern“ geht darin auf: Einrichten-Spalte und Kamera-Dock sichern als Prüfprogramm; ältere Kamera-Einstellungen bleiben unter Einstellungen › Prüfprogramme ladbar.
+- Fußleiste links nur noch Symbole mit Tooltip (keine abgeschnittenen „M.. / C..“), Versionszeile → Einstellungen › Hardware › Software.
+- Smoke `tools/smoke_einstellungen.js`; Patch `tools/patch_1957_einstellungen.py`.
+
+## 1.9.56-ablauf (2026-10-03) · UI-Pakete 1+2
+
+- **Geführter Ablauf**: Seitenleiste als Schritte ① Einrichten → ② Anlernen → ③ Prüfen, mit Häkchen, sobald erledigt (Leerbild/Fenster · zwei Objekte mit je 5 Fotos + gelernt · erste Prüfung). Seitentitel heißen wie die Schritte.
+- **Nächster Schritt**: Karte oben in der rechten Spalte („Noch nichts gelernt → Anlernen“, „Eingerichtet ✓ → weiter“, Fortschritt beim Fotografieren).
+- **Erste Schritte**: Assistent mit 6 Punkten, hakt sich live ab, jeder Punkt mit Knopf; öffnet sich einmal bei frischer Anlage, danach über die Seitenleiste oder „⋯“.
+- **Ein Hauptknopf je Seite** rechts oben: Prüfen → PRÜFEN · Anlernen → Foto aufnehmen (+ Lernen …) · Einrichten → Leerbild merken (+ Weiter). Analyse und Bedienansicht im „⋯“-Menü. Linie/Arm nur im Linienbetrieb; eine laufende Linie bleibt überall stoppbar.
+- Kopfzeile: „Gelernt: 2 Objekte“ statt „Verbund + M3 · 128 NPs“ (Technik im Tooltip, Klick → Anlernen). „90° drehen“ aus der Bildleiste ins Rechtsklick-Menü.
+- Smoke `tools/smoke_ablauf.js`; Vorschau-Werkzeug `tools/ui_vorschau.js` / `.sh` (statische UI-Schnappschüsse für Screenshots). Patch `tools/patch_1956_ablauf.py`.
+
 ## 1.0.0-alpha.1 (2026-10-02) · erste öffentliche Alpha
 
 - Versionsstring `1.0.0-alpha.1`; `RELEASE_NOTES.md` (Umfang, bekannte Grenzen), CITATION auf das Code-Repository, README-Status. Inhaltlich identisch mit 1.9.55-einkamera. Export mit `tools/release_export.py`, Tag `v1.0.0-alpha.1`.

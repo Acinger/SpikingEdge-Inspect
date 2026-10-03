@@ -28,7 +28,7 @@ const { JSDOM } = require("jsdom"); const BASIS = process.argv[2] || "http://127
       await schritt("linie-ansicht", async () => { await klick("#navLinie", 900); await klick('#seitenNav .snav[data-modus="betreiben"]', 500); });
       await schritt("rezepte", async () => { await klick('[data-tat="rezepte"]', 700); await klick('[data-tat="rezepte"]', 200); const dr = $("dRezepte"); if (dr) dr.hidden = true; });
       await schritt("alarme", async () => { await klick('[data-tat="alarme"]', 700); const da = $("dAlarme"); if (da) da.hidden = true; });
-      await schritt("zustand", async () => { await klick("#navZustand", 700); for (const id of ["diagnose", "wartung", "hardware"]) await klick(`#eNav button[data-id="${id}"]`, 300); const de = $("dEinstellungen"); if (de) de.hidden = true; });
+      await schritt("zustand", async () => { await klick("#navZustand", 700); for (const id of ["allgemein", "kamera", "erkennung", "programme", "eaio", "sps", "benutzer", "diagnose", "wartung", "hardware"]) await klick(`#eNav button[data-id="${id}"]`, 300); const de = $("dEinstellungen"); if (de) de.hidden = true; });
       await schritt("analyse", async () => { await klick("#opsAnalysisButton", 700); const da = $("dOpsAnalyse"); if (da) da.hidden = true; });
       for (const t of ["arm", "training", "messen", "einstellungen"]) await schritt("dialog " + t, async () => { await klick(`[data-tat="${t}"]`, 500); d.querySelectorAll(".schleier").forEach(s => { s.hidden = true; }); });
       await schritt("betriebsansicht", async () => { await klick("#betriebKnopf", 500); await klick("#betriebKnopf", 300); });

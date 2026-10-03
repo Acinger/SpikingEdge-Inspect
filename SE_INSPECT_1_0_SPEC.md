@@ -197,3 +197,23 @@ Versionierung ab Release: `MAJOR.MINOR.PATCH`; der Footer-Build-String wird zur 
 - **Beleuchtung:** Die Zahlen gelten unter der Referenzleuchte. Die Website muss das so sagen.
 - **Umbenennung:** Zwei Namen in Code und Doku gleichzeitig sind die größte Quelle für Verwirrung; deshalb A11 erst, wenn der Funktionsstand steht.
 - **Silhouette als Grenze:** Teile, die sich nur in Farbe oder Oberfläche unterscheiden, trennt der Silhouettenmodus nicht. Für 1.0 ist das eine dokumentierte Grenze, kein Fehler.
+
+
+## Nachtrag 2026-10-03: Industrie-Paket (nach den UI-Paketen 1–4)
+
+Abgleich mit dem Standard bei Keyence (IV/CV-X), Cognex In-Sight, SICK Inspector, Omron FH. Ohne I1–I3 ist SE Inspect nicht in eine Anlage einbaubar.
+
+| Nr | Inhalt | Kern |
+|---|---|---|
+| I1 | Digitale I/O | Trigger-Eingang (Lichtschranke/SPS), Ausgänge OK / NOK / Bereit / Fehler; Pi-GPIO über Optokoppler bzw. 24-V-I/O-HAT; Puls- und Halte-Modus, Watchdog „Bereit“ |
+| I2 | Anbindung SPS/Leitrechner | Modbus TCP (Server) oder OPC UA, dazu MQTT bzw. einfaches TCP-Protokoll: Programm wählen, triggern, Ergebnis/Name/Konfidenz lesen |
+| I3 | Benutzerrollen | Bediener / Einrichter / Admin mit PIN, Bedienansicht für Bediener fest; Änderungsprotokoll (wer, wann, was) |
+| I4 | Prüfprogramme per I/O/API umschalten, Komplettsicherung als eine Datei (Export/Import) |
+| I5 | Auto-Schwelle | aus Gut-/Schlecht-Beispielen des Testsatzes Schwelle vorschlagen (Keyence „Auto-Tuning“) |
+| I6 | Kalibrierung mm | Kalibrierplättchen, Messwerte in mm |
+| I7 | NG-Bildarchiv | Ablage, Filter, Export auf Netzlaufwerk |
+| I8 | Positionsnachführung | Prüfbereiche folgen verschobenem/gedrehtem Teil |
+| I9 | Statistik/Trend | Ausbeute über Zeit, Schichtzähler, Konfidenz-Drift |
+| I10 | Offline-Simulation | Einstellung gegen gespeicherte Bilder (Testsatz) prüfen, bevor sie live geht |
+
+Reihenfolge: I1 → I3 → I2 → I4 → I5, danach I6–I10.

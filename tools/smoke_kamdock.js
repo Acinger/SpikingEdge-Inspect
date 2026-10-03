@@ -16,7 +16,7 @@ const { JSDOM } = require("jsdom"); const BASIS = process.argv[2] || "http://127
   ok($("videoteil").classList.contains("dockoffen") && w.eval("KAMDOCK_OFFEN"), "Kamera-Knopf oeffnet Dock");
   ok($("kamDockInhalt").querySelectorAll(".kd-sp").length === 4, "vier Spalten");
   ok(/Bild/.test($("kamDockInhalt").textContent) && /Farbe/.test($("kamDockInhalt").textContent) && /Fenster/.test($("kamDockInhalt").textContent) && /Hintergrund/.test($("kamDockInhalt").textContent), "Spaltentitel Bild / Farbe / Fenster / Hintergrund");
-  ok(!!$("kamDockInhalt").querySelector('[data-tat="leerbild"]') && !!$("kamDockInhalt").querySelector('[data-tat="preset_speichern"]'), "Leerbild + Sichern im Dock");
+  ok(!!$("kamDockInhalt").querySelector('[data-tat="leerbild"]') && !!$("kamDockInhalt").querySelector('[data-tat="rezept_speichern"]'), "Leerbild + als Pruefprogramm sichern im Dock");
   const r = $("kamDockInhalt").querySelector('input[data-regler="fenster"]'); r.value = "70"; r.dispatchEvent(new w.Event("input", { bubbles: true })); await warte(900);
   const st = await (await fetch(BASIS + "/api/state")).json(); ok(Math.round(st.bereich.fenster) === 70, "Fenster-Regler im Dock wirkt (" + st.bereich.fenster + ")");
   ok(/70 %/.test($("kamDockInhalt").querySelector(".kd-fenster-wert").textContent), "Dock zeigt 70 %");
