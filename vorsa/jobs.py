@@ -31,6 +31,7 @@ class Lauf:
         self.phase = ""
         self.schritt = 0
         self.schritte = 0
+        self.gesamt: Optional[float] = None     # 1.9.71: Fortschritt ueber alle Phasen
         self.ergebnis: dict = {}
         self.grund = ""
         self.begonnen = 0.0
@@ -47,6 +48,12 @@ class Lauf:
         if schritte:
             self.schritte = schritte
         self.schritt = schritt
+
+    def setze_gesamt(self, anteil: float) -> None:
+        try:
+            self.gesamt = max(0.0, min(1.0, float(anteil)))
+        except Exception:
+            pass
 
     @property
     def abbruch_gewuenscht(self) -> bool:
@@ -118,6 +125,8 @@ class Lauf:
             "schritt": self.schritt,
             "schritte": self.schritte,
             "anteil": round(self.schritt / self.schritte, 3) if self.schritte else 0.0,
+            "gesamt": (1.0 if self.fertig and self.ok else
+                       round(self.gesamt, 3) if self.gesamt is not None else None),
             "sekunden": round(dauer, 1),
             "grund": self.grund,
             "ergebnis": self.ergebnis,

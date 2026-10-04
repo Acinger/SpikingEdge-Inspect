@@ -11,7 +11,7 @@ jobs:
       - run: pip install "numpy<2" opencv-python-headless
       - name: Benches ohne Hardware
         run: |
-          for t in farbmaske glanz linie_fluss karten_waechter m3_head mehrbild hypothesen verteiler stationaer eaio sps; do
+          for t in farbmaske glanz linie_fluss karten_waechter m3_head mehrbild hypothesen verteiler stationaer eaio sps konfig sicherung selbstlernen trend kalibrierung m3_fortschritt 1_1_server; do
             echo "== $t"; python3 tools/test_$t.py | tail -3; done
           python3 tools/run_selftest.py --use-background --out /tmp/selftest | tail -3
       - uses: actions/setup-node@v4
@@ -23,5 +23,11 @@ jobs:
           sleep 6
           node tools/smoke_stationaer.js http://127.0.0.1:8765 | tail -2
           node tools/smoke_sprache.js http://127.0.0.1:8765 | tail -2
-          for t in ablauf einstellungen anlernen eaio rollen einrichten kamdock fenster; do
+          for t in drehen ruhig laufbalken ablauf einstellungen anlernen eaio rollen einrichten kamdock fenster; do
             echo "== $t"; node tools/smoke_$t.js http://127.0.0.1:8765 | tail -1; done
+          pkill -f "run_web.py --port 8765" || true
+      - name: UI-Smoke 1.1 (eigener Server, frische Daten)
+        run: |
+          VORSA_PROFIL=stationaer VORSA_SYNTH_HALTEN_S=3 VORSA_SYNTH_LEER_S=0.8 python3 tools/run_web.py --port 8766 --synthetisch --daten /tmp/v11 > /tmp/srv11.log 2>&1 &
+          sleep 6
+          node tools/smoke_elf.js http://127.0.0.1:8766 | tail -1

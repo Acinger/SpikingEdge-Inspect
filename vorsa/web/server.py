@@ -47,7 +47,7 @@ _DETEKTOR: dict = {"aktiv": False}
 # geklaert statt in zwei Runden.
 # Bei JEDER Aenderung erhoehen. Zuletzt war tagelang dieselbe Nummer im
 # Umlauf, und ob der Pi neuen oder alten Code fuhr, war nicht feststellbar.
-BUILD = "1.0.0-alpha.2"
+BUILD = "1.0.0-alpha.3"
 
 
 # ----------------------------------------------------------------------
@@ -1287,6 +1287,21 @@ class Verarbeitung:
             self.pruefbuch.archiv_setzen(self.zustand.ordner)
         except Exception:
             pass
+        # PRUEFJOURNAL (1.1-C): jedes gebuchte Teil dauerhaft - fuer Trend und Drift.
+        from ..trend import Journal
+        self.journal = Journal(self.zustand.ordner)
+        _buche_roh = self.pruefbuch.buche
+
+        def _buche_mit_journal(urteil, name="", konf=0.0, *a, **k):
+            e = _buche_roh(urteil, name, konf, *a, **k)
+            try:
+                self.journal.teil(e.get("urteil", urteil), e.get("name", ""), e.get("konfidenz", 0.0), e.get("zeit"))
+            except Exception:
+                pass
+            return e
+        self.pruefbuch.buche = _buche_mit_journal
+        self._testbild = None
+        self._testlauf = {"laeuft": False, "fertig": 0, "gesamt": 0, "ergebnis": None, "fehler": ""}
         self._pruef_gefoerdert = 0        # letzter bekannter Zaehlerstand
         self._pruef_geprueft = 0          # Fluss-Takt: gebuchte Pruefungen
         self._pruef_phase = ""            # letzte Linienphase (Uebergaenge)
@@ -1359,6 +1374,16 @@ class Verarbeitung:
         self.konfidenz_schwelle = None
         self.unbekannt_ziel = 10.0        # % - darueber: Nachlernen empfohlen
         self._pruef_einst_laden()
+        # 1.9.66: Bilddrehung ueberlebt den Neustart (montierte Kamera).
+        self.drehung = 0
+        try:
+            _dw = int(json.loads((Path(self.zustand.ordner) / "drehung.json").read_text(encoding="utf-8")).get("drehung", 0))
+            self.drehung = _dw if _dw in (0, 90, 180, 270) else 0
+        except Exception:
+            pass
+        # 1.9.70: Kalibrierung je Objekt aus dem letzten Testlauf.
+        self._kalib = {}
+        self._kalib_laden()
         # Alarmbuch (Stufe 2): flankengesteuerte Alarme mit Quittieren.
         self.alarmbuch = Alarmbuch()
         # BENUTZERROLLEN (I3, 1.9.60): ohne Admin-PIN alles offen.
@@ -1586,15 +1611,23 @@ class Verarbeitung:
         while self._laeuft:
             t0 = time.perf_counter()
             frame = self.quelle.lies()
+            # TESTLAUF (1.1-B): statt des Kamerabilds eine Testsatz-Szene.
+            tb = self._testbild
+            if tb is not None:
+                frame = tb.copy()
             # Bilddrehung in 90-Grad-Schritten (Knopf im Videokopf,
             # 2026-08-28): VOR allem anderen angewandt, damit Erkennung,
             # Lernfotos und Anzeige dieselbe Lage sehen - z. B. wenn die
             # Kamera gedreht montiert ist.
             d = getattr(self, "drehung", 0)
-            if d:
+            if d and tb is None:
                 frame = np.ascontiguousarray(np.rot90(frame, d // 90))
             h, w = frame.shape[:2]
-            x, y, seite, hinweis = self.zustand.bereich.rechteck(w, h)
+            if tb is None:
+                x, y, seite, hinweis = self.zustand.bereich.rechteck(w, h)
+            else:
+                # Testszene IST der Pruef-Ausschnitt: ganzes Bild, Fenster bleibt unberuehrt.
+                x, y, seite, hinweis = 0, 0, min(w, h), ""
             self.zustand.bereich_info = {
                 "x": x, "y": y, "seite": seite, "bild_breite": w,
                 "bild_hoehe": h, "hinweis": hinweis,
@@ -1620,7 +1653,7 @@ class Verarbeitung:
             self._roh_ausschnitt = ausschnitt
             # MEHRBILD (A2): nur stationaer und nur beim Betreiben - die
             # Lernfotos bleiben einzelne, echte Aufnahmen.
-            if (self.profil == "stationaer" and self.mehrbild.anzahl > 1
+            if (self.profil == "stationaer" and self.mehrbild.anzahl > 1 and tb is None
                     and str(self.zustand.betriebsart) == "betreiben"):
                 try:
                     ausschnitt = self.mehrbild.verarbeite(ausschnitt)
@@ -2023,7 +2056,7 @@ class Verarbeitung:
                 pass
 
             # STATIONAERE PRUEFUNG (1.9.38): Knopf/API oder Automatik.
-            if self.profil == "stationaer":
+            if self.profil == "stationaer" and tb is None:
                 try:
                     self._pruef_stationaer_takt(art)
                 except Exception:
@@ -2063,7 +2096,7 @@ class Verarbeitung:
                 self.zustand.bereich_info["system"] = self._system_stand
                 if self.eaio is not None:
                     self.eaio.anlage(
-                        bereit=(art == "betreiben"),
+                        bereit=(art == "betreiben" and tb is None),
                         stoerung=bool((self._alarm_stand or {}).get("aktiv_alarm")))
                     self.zustand.bereich_info["eaio"] = {
                         "zustand": dict(self.eaio.zustand),
@@ -4042,6 +4075,234 @@ class Verarbeitung:
         return {"cfg": c, **st, "register": reg, "programme": self._sps_programme(),
                 "letzt": dict(self._sps_letzt)}
 
+    # ---- 1.9.70: Kalibrierung je Objekt ------------------------------------
+    def _kalib_pfad(self):
+        return Path(self.zustand.ordner) / "kalibrierung.json"
+
+    def _kalib_laden(self) -> None:
+        try:
+            self._kalib = json.loads(self._kalib_pfad().read_text(encoding="utf-8"))
+        except Exception:
+            self._kalib = {}
+        self._kalib_anwenden()
+
+    def _kalib_anwenden(self) -> None:
+        if self.lerner is not None:
+            if getattr(self, "_testlauf", {}).get("laeuft"):
+                print("  Kalibrierung: nicht angewendet (Testlauf laeuft)", flush=True)
+                return
+            try:
+                w = dict((self._kalib or {}).get("werte") or {})
+                self.lerner.kalibrierung = w
+                print(f"  Kalibrierung angewendet: {w}", flush=True)
+            except Exception:
+                pass
+
+    def _kalib_speichern(self, werte: dict, szenen: int) -> None:
+        self._kalib = {"werte": dict(werte), "szenen": int(szenen), "zeit": time.strftime("%Y-%m-%d %H:%M"),
+                       "veraltet": False}
+        try:
+            self._kalib_pfad().write_text(json.dumps(self._kalib, ensure_ascii=False, indent=1), encoding="utf-8")
+        except Exception:
+            pass
+        self._kalib_anwenden()
+
+    def kalibrierung_stand(self) -> dict:
+        return dict(self._kalib or {})
+
+    def kalibrierung_weg(self) -> dict:
+        self._kalib = {}
+        try:
+            self._kalib_pfad().unlink(missing_ok=True)
+        except Exception:
+            pass
+        self._kalib_anwenden()
+        return {"ok": True}
+
+    # ---- 1.1: Training merken, Vorschlaege, Testlauf -----------------------
+    def _nach_training(self, bericht):
+        try:
+            if getattr(bericht, "ok", False):
+                self.journal.training()
+                if self._kalib.get("werte"):
+                    self._kalib["veraltet"] = True
+                    try:
+                        self._kalib_pfad().write_text(json.dumps(self._kalib, ensure_ascii=False, indent=1), encoding="utf-8")
+                    except Exception:
+                        pass
+                self._kalib_anwenden()
+        except Exception:
+            pass
+        return bericht
+
+    def _vorschlag_erledigt_pfad(self):
+        return Path(self.zustand.ordner) / "vorschlaege_erledigt.json"
+
+    def _vorschlag_erledigt(self) -> set:
+        try:
+            return set(json.loads(self._vorschlag_erledigt_pfad().read_text(encoding="utf-8")))
+        except Exception:
+            return set()
+
+    def _vorschlag_erledigt_add(self, dateien) -> None:
+        e = self._vorschlag_erledigt() | set(dateien)
+        try:
+            self._vorschlag_erledigt_pfad().write_text(json.dumps(sorted(e)[-5000:]), encoding="utf-8")
+        except Exception:
+            pass
+
+    def vorschlaege(self, grenze: float = 0.7) -> dict:
+        from ..selbstlernen import merkmale, vorschlaege
+        ordner = self.pruefbuch._archiv_ordner
+        if ordner is None:
+            return {"gruppen": [], "bilder": 0, "ohne_umriss": 0, "einzeln": 0, "grenze": grenze}
+        fertig = self._vorschlag_erledigt()
+        dateien = [d for d in sorted(p.name for p in ordner.glob("*_unbekannt.jpg")) if d not in fertig][-300:]
+        # Merkmale der gelernten Objekte (fuer "aehnelt X"), je Objekt hoechstens 6 Fotos.
+        bekannte = {}
+        try:
+            for k in self.zustand.klassen.values():
+                if k.negativ or not k.prototypen:
+                    continue
+                vs = []
+                for d in list(k.prototypen)[:6]:
+                    b = self.zustand.prototyp_bild(d)
+                    v = merkmale(b) if b is not None else None
+                    if v is not None:
+                        vs.append(v)
+                bekannte[k.name] = vs
+        except Exception:
+            bekannte = {}
+        return vorschlaege(ordner, dateien, grenze=max(0.3, min(1.5, float(grenze))), bekannte=bekannte)
+
+    def vorschlag_anwenden(self, k: dict) -> dict:
+        aktion = str(k.get("aktion", ""))
+        dateien = [Path(str(d)).name for d in (k.get("dateien") or [])][:200]
+        ordner = self.pruefbuch._archiv_ordner
+        if not dateien or ordner is None:
+            return {"ok": False, "grund": "keine Bilder"}
+        if aktion == "verwerfen":
+            self._vorschlag_erledigt_add(dateien)
+            return {"ok": True, "aktion": aktion, "anzahl": len(dateien)}
+        if aktion == "neu":
+            name = str(k.get("name", "")).strip()[:40]
+            if not name:
+                return {"ok": False, "grund": "Name fehlt"}
+            kl = self.zustand.klasse_anlegen(name)
+        elif aktion == "hintergrund":
+            kl = next((x for x in self.zustand.klassen.values() if x.negativ), None) or self.zustand.klasse_anlegen("Hintergrund", True)
+        elif aktion == "zu":
+            try:
+                kl = self.zustand.klassen.get(int(k.get("klasse")))
+            except Exception:
+                kl = None
+            if kl is None:
+                return {"ok": False, "grund": "Objekt unbekannt"}
+        else:
+            return {"ok": False, "grund": "aktion=neu|zu|hintergrund|verwerfen"}
+        n = 0
+        for d in dateien[:24]:                  # mehr Fotos bringen beim Chip-Lernen wenig
+            b = cv2.imread(str(ordner / d))
+            if b is not None and self.zustand.prototyp_speichern(kl.id, b):
+                n += 1
+        self._vorschlag_erledigt_add(dateien)
+        try:
+            self.rollen and self.rollen.protokoll("vorschlag", "/api/vorschlag_anwenden", {"aktion": aktion, "objekt": kl.name, "fotos": n})
+        except Exception:
+            pass
+        return {"ok": n > 0, "aktion": aktion, "klasse": kl.name, "klasse_id": kl.id, "fotos": n,
+                "hinweis": "Jetzt „Training …“ – erst danach erkennt die Anlage das Objekt."}
+
+    def testlauf_starten(self) -> dict:
+        if self._testlauf.get("laeuft"):
+            return {"ok": False, "grund": "läuft schon", **self._testlauf}
+        if self.testsatz is None or not self.testsatz.szenen:
+            return {"ok": False, "grund": "Testsatz leer – erst Szenen aufnehmen (Prüfung › Testsatz)"}
+        li = self.linie
+        if li is not None and getattr(li, "aktiv", False):
+            return {"ok": False, "grund": "Linie läuft – erst stoppen"}
+        if not getattr(self.lerner, "klassen", None):
+            return {"ok": False, "grund": "nichts gelernt – erst trainieren"}
+        szenen = list(self.testsatz.szenen)
+        self._testlauf = {"laeuft": True, "fertig": 0, "gesamt": len(szenen), "ergebnis": None, "fehler": ""}
+        threading.Thread(target=self._testlauf_faden, args=(szenen,), daemon=True, name="testlauf").start()
+        return {"ok": True, **self._testlauf}
+
+    def _testlauf_faden(self, szenen) -> None:
+        from ..schwelle import ist_aus_erkennung, kurve, kalibrierung_aus, kalibriert
+        alt_art = self.zustand.betriebsart
+        ergebnisse = []
+        ler = self.lerner
+        alt_kal = dict(getattr(ler, "kalibrierung", None) or {})
+        hatte_ab = "UNBEKANNT_AB" in getattr(ler, "__dict__", {})
+        alt_ab = getattr(ler, "UNBEKANNT_AB", 0.55)
+        try:
+            # ROH messen: ohne Kalibrierung und ohne Unbekannt-Grenze - beides
+            # wird danach nachgerechnet (sonst gingen Namen unter der Grenze
+            # verloren und die Kalibrierung misst sich selbst).
+            ler._kalib_sperre = True
+            ler.UNBEKANNT_AB = 0.0
+            self.zustand.betriebsart = "betreiben"
+            neg = self._negativ_namen()
+            for sz in szenen:
+                b = cv2.imread(str(self.testsatz.ordner / sz["datei"]))
+                if b is None:
+                    self._testlauf["fertig"] += 1
+                    continue
+                if str(self.zustand.betriebsart) != "betreiben":
+                    raise RuntimeError("Betriebsart wurde während des Testlaufs gewechselt – Lauf abgebrochen, bitte wiederholen")
+                self._testbild = b
+                start = getattr(self, "_takt", 0)
+                bis = time.time() + 8.0
+                while time.time() < bis and getattr(self, "_takt", 0) < start + 6:
+                    time.sleep(0.03)
+                erk = self.zustand.erkannt or {}
+                ergebnisse.append({"id": sz.get("id"), "soll": list(sz.get("soll") or []),
+                                   "ist": ist_aus_erkennung(erk.get("je_objekt") or [], neg)})
+                self._testlauf["fertig"] += 1
+            ler._kalib_sperre = False
+            if hatte_ab:
+                ler.UNBEKANNT_AB = alt_ab
+            else:
+                try:
+                    del ler.UNBEKANNT_AB
+                except Exception:
+                    pass
+            ab = float(getattr(ler, "UNBEKANNT_AB", 0.55))
+            kal = kalibrierung_aus(ergebnisse)
+            if kal:
+                self._kalib_speichern(kal, len(ergebnisse))
+            else:
+                kal = dict((self._kalib or {}).get("werte") or {})
+            k = kurve(kalibriert(ergebnisse, kal, ab))
+            k["kalibrierung"] = kal
+            k["roh_vorschlag"] = kurve(kalibriert(ergebnisse, {}, ab)).get("vorschlag")
+            k["aktuelle_schwelle"] = self.konfidenz_schwelle
+            k["zeit"] = time.strftime("%Y-%m-%d %H:%M")
+            k["build"] = BUILD
+            k["einzeln"] = [{"id": e["id"], "soll": e["soll"], "ist": [[n, round(c, 3)] for n, c in e["ist"]]} for e in ergebnisse]
+            self._testlauf["ergebnis"] = k
+            try:
+                (self.testsatz.ordner / "schwellenkurve.json").write_text(json.dumps(k, ensure_ascii=False, indent=1), encoding="utf-8")
+            except Exception:
+                pass
+        except Exception as exc:
+            self._testlauf["fehler"] = f"{type(exc).__name__}: {str(exc)[:100]}"
+        finally:
+            self._testbild = None
+            try:
+                if getattr(ler, "UNBEKANNT_AB", None) == 0.0:
+                    if hatte_ab:
+                        ler.UNBEKANNT_AB = alt_ab
+                    else:
+                        del ler.UNBEKANNT_AB
+            except Exception:
+                pass
+            ler._kalib_sperre = False
+            self.zustand.betriebsart = alt_art
+            self._testlauf["laeuft"] = False
+            self._kalib_anwenden()
+
     def _eaio_trigger(self) -> None:
         """Trigger-Eingang (Flanke): eine Pruefung anfordern. Wirft mit Grund,
         wenn nicht zulaessig - der Grund steht dann im I/O-Protokoll."""
@@ -4121,6 +4382,18 @@ class Verarbeitung:
                 b = cv2.imread(str(pfad))
                 if b is not None:
                     e = {"bild": b, "zeit": pfad.stat().st_mtime}
+                    # 1.9.70: Drehung beim Aufnehmen (Begleitdatei). Alte
+                    # Leerbilder ohne Begleitdatei: aelter als die letzte
+                    # Drehung -> unbekannt (= passt nicht).
+                    try:
+                        e["drehung"] = int(json.loads(pfad.with_suffix(".json").read_text(encoding="utf-8")).get("drehung", 0))
+                    except Exception:
+                        try:
+                            dj = Path(self.zustand.ordner) / "drehung.json"
+                            dw = int(json.loads(dj.read_text(encoding="utf-8")).get("drehung", 0)) if dj.exists() else 0
+                            e["drehung"] = -1 if (dj.exists() and dj.stat().st_mtime > e["zeit"]) else dw
+                        except Exception:
+                            e["drehung"] = 0
                     r = cv2.imread(str(pfad.with_name(pfad.stem + "_rausch.png")),
                                    cv2.IMREAD_GRAYSCALE)
                     if r is not None and r.shape[:2] == b.shape[:2]:
@@ -4162,13 +4435,15 @@ class Verarbeitung:
         median = np.median(stapel, axis=0).astype(np.uint8)
         abw = np.abs(stapel - median.astype(np.int16)).max(axis=3)  # je Bild, je Pixel
         rausch = np.clip(abw.max(axis=0), 0, 255).astype(np.uint8)
+        dreh = int(getattr(self, "drehung", 0) or 0) if quelle == "haupt" else 0
         self._leerbild[quelle] = {"bild": median, "rausch": rausch,
-                                  "zeit": time.time()}
+                                  "zeit": time.time(), "drehung": dreh}
         o = self._leerbild_ordner()
         if o is not None:
             try:
                 cv2.imwrite(str(o / f"{quelle}.png"), median)
                 cv2.imwrite(str(o / f"{quelle}_rausch.png"), rausch)
+                (o / f"{quelle}.json").write_text(json.dumps({"drehung": dreh}), encoding="utf-8")
             except Exception:
                 pass
         return {"ok": True, "quelle": quelle, "bilder": len(bilder),
@@ -4183,22 +4458,49 @@ class Verarbeitung:
         if o is not None:
             (o / f"{quelle}.png").unlink(missing_ok=True)
             (o / f"{quelle}_rausch.png").unlink(missing_ok=True)
+            (o / f"{quelle}.json").unlink(missing_ok=True)
         return {"ok": True, **self.leerbild_stand()}
 
+    def _leerbild_passt(self, quelle: str, v: dict) -> bool:
+        if str(quelle) != "haupt":
+            return True
+        return int(v.get("drehung", 0)) == int(getattr(self, "drehung", 0) or 0)
+
     def leerbild_stand(self) -> dict:
+        # Ein Leerbild, das nicht zur aktuellen Drehung passt, gilt als
+        # nicht vorhanden (Schritt "Leerbild" wieder offen) - und wird
+        # ausdruecklich als veraltet gemeldet.
         return {"leerbild": {q: time.strftime("%H:%M", time.localtime(v["zeit"]))
-                             for q, v in self._leerbild.items()}}
+                             for q, v in self._leerbild.items() if self._leerbild_passt(q, v)},
+                "leerbild_veraltet": [q for q, v in self._leerbild.items() if not self._leerbild_passt(q, v)]}
 
     def _leerbild_crop(self, quelle: str, form, y0, y1, x0, x1):
         """Passender Ausschnitt des Leerbilds - oder None, wenn keins da
         ist oder die Bildgroesse nicht mehr passt (Kamera/Drehung neu)."""
         v = self._leerbild.get(str(quelle))
-        if not v:
+        if not v or not self._leerbild_passt(quelle, v):
             return None
         b = v["bild"]
+        r = v.get("rausch")
+        if (str(quelle) == "haupt" and getattr(self, "_testbild", None) is not None
+                and b.shape[:2] != tuple(form[:2])):
+            # 1.9.74 Testbild: Leerbild am Aufnahmefenster zuschneiden und auf
+            # die Testszene skalieren - dieselbe Kette wie live.
+            try:
+                lh, lw = b.shape[:2]
+                lx, ly, ls, _h = self.zustand.bereich.rechteck(lw, lh)
+                th, tw = y1 - y0, x1 - x0
+                if ls >= 8 and th >= 8 and tw >= 8:
+                    lb = cv2.resize(b[ly:ly + ls, lx:lx + ls], (tw, th), interpolation=cv2.INTER_AREA)
+                    if r is not None and r.shape[:2] == b.shape[:2]:
+                        lr = cv2.resize(r[ly:ly + ls, lx:lx + ls], (tw, th), interpolation=cv2.INTER_AREA)
+                        return (lb, lr)
+                    return lb
+            except Exception:
+                pass
+            return None
         if b.shape[:2] != tuple(form[:2]):
             return None
-        r = v.get("rausch")
         if r is not None and r.shape[:2] == b.shape[:2]:
             # (Bild, Rauschkarte) - _erkenne nimmt beides auseinander.
             return (b[y0:y1, x0:x1], r[y0:y1, x0:x1])
@@ -4834,7 +5136,15 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
                 # Keep-Alive: dieselbe Handler-Instanz bedient mehrere
                 # Anfragen - den Koerper der vorigen nie wiederverwenden.
                 self.__dict__.pop("_koerper_d", None)
+                self.__dict__.pop("_roh_d", None)
                 weg = urlparse(self.path).path
+                if weg in ("/api/sicherung_pruefen", "/api/sicherung_einspielen"):
+                    # ZIP als Rohkoerper (kein JSON); hoechstens 1 GB.
+                    n = int(self.headers.get("Content-Length", 0) or 0)
+                    if n <= 0 or n > 1024 * 1024 * 1024:
+                        return self._json({"ok": False, "grund": "leere oder zu grosse Datei"}, 400)
+                    self._roh_d = self.rfile.read(n)
+                    self._koerper_d = {}
                 koerper = self._koerper()
                 r = getattr(verarbeitung, "rollen", None)
                 rolle = r.rolle(self.headers.get("X-SE-Token", "")) if r else "admin"
@@ -4920,6 +5230,7 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
                 # steht alles still und man sieht nur ein leeres Fenster.
                 d = zustand.as_dict()
                 d["profil"] = getattr(verarbeitung, "profil", "linie")
+                d["drehung"] = int(getattr(verarbeitung, "drehung", 0) or 0)
                 try:
                     d["lernen"] = (verarbeitung.lerner.as_dict()
                                    if verarbeitung.lerner else {})
@@ -5006,6 +5317,30 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
 
             if weg == "/api/sps":
                 return self._json(verarbeitung.sps_status())
+
+            if weg == "/api/trend":
+                from ..trend import auswerten
+                return self._json(auswerten(verarbeitung.journal.lesen(seit=time.time() - 15 * 86400)))
+
+            if weg == "/api/vorschlaege":
+                try:
+                    g = float((frage.get("grenze") or ["0.7"])[0])
+                except ValueError:
+                    g = 0.7
+                return self._json(verarbeitung.vorschlaege(g))
+
+            if weg == "/api/testlauf":
+                t = dict(verarbeitung._testlauf)
+                if t.get("ergebnis") is None and not t.get("laeuft"):
+                    try:
+                        p = verarbeitung.testsatz.ordner / "schwellenkurve.json"
+                        if p.exists():
+                            t["ergebnis"] = json.loads(p.read_text(encoding="utf-8"))
+                    except Exception:
+                        pass
+                t["szenen"] = len(verarbeitung.testsatz.szenen) if verarbeitung.testsatz else 0
+                t["kalibrierung"] = verarbeitung.kalibrierung_stand()
+                return self._json(t)
 
             if weg == "/api/rollen":
                 r = getattr(verarbeitung, "rollen", None)
@@ -5391,6 +5726,11 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
                     verarbeitung.linie.abhol = _rz(verarbeitung.linie.abhol)
                     gedreht.append("abhol")
                 verarbeitung.linie.speichern(zustand.ordner)
+                try:
+                    (Path(zustand.ordner) / "drehung.json").write_text(
+                        json.dumps({"drehung": verarbeitung.drehung}), encoding="utf-8")
+                except Exception:
+                    pass
                 print(f"  Bilddrehung: {verarbeitung.drehung} Grad "
                       f"(mitgedrehte Zonen: {gedreht or 'keine'})", flush=True)
                 return self._json({"drehung": verarbeitung.drehung})
@@ -5561,6 +5901,42 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
 
             if weg == "/api/sps":
                 return self._json(verarbeitung.sps_einstellen(koerper))
+
+            if weg == "/api/vorschlag_anwenden":
+                return self._json(verarbeitung.vorschlag_anwenden(koerper))
+
+            if weg == "/api/testlauf":
+                if koerper.get("aktion") == "start":
+                    return self._json(verarbeitung.testlauf_starten())
+                if koerper.get("aktion") == "kalibrierung_weg":
+                    return self._json(verarbeitung.kalibrierung_weg())
+                return self._json({"ok": False, "grund": "aktion=start|kalibrierung_weg"}, 400)
+
+            if weg == "/api/sicherung":
+                # I4: Komplettsicherung des Datenordners als ZIP.
+                from ..sicherung import erstellen
+                roh, name = erstellen(zustand.ordner, BUILD, getattr(verarbeitung, "profil", ""))
+                self.send_response(200)
+                self.send_header("Content-Type", "application/zip")
+                self.send_header("Content-Length", str(len(roh)))
+                self.send_header("Content-Disposition", f'attachment; filename="{name}"')
+                self.send_header("Cache-Control", "no-store")
+                self.end_headers()
+                self.wfile.write(roh)
+                return None
+
+            if weg in ("/api/sicherung_pruefen", "/api/sicherung_einspielen"):
+                from ..sicherung import einspielen, pruefen
+                roh = self.__dict__.get("_roh_d", b"")
+                if weg.endswith("pruefen"):
+                    return self._json(pruefen(roh))
+                erg = einspielen(zustand.ordner, roh, BUILD)
+                if erg.get("ok"):
+                    print(f"  Sicherung eingespielt ({erg['manifest']}) - Neustart", flush=True)
+                    # Antwort zuerst ausliefern, dann beenden: systemd startet neu,
+                    # der Server liest den eingespielten Stand frisch ein.
+                    threading.Timer(0.8, lambda: __import__("os")._exit(1)).start()
+                return self._json(erg)
 
             if weg in ("/api/anmelden", "/api/abmelden", "/api/rollen"):
                 r = getattr(verarbeitung, "rollen", None)
@@ -5799,15 +6175,15 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
                 # Zeitueberschreitung liefe und die Seite haengend aussaehe.
                 mit_var = bool(koerper.get("mit_varianten", True))
                 return self._json(lauf.starte(
-                    lambda l: chip_lernen(zustand, lerner, mit_var, l).as_dict()))
+                    lambda l: verarbeitung._nach_training(chip_lernen(zustand, lerner, mit_var, l)).as_dict()))
 
             if weg == "/api/lernen_sofort":
                 lerner = verarbeitung.lerner
                 if lerner is None:
                     return self._json({"ok": False, "grund": "kein Lerner"}, 503)
-                bericht = chip_lernen(
+                bericht = verarbeitung._nach_training(chip_lernen(
                     zustand, lerner,
-                    mit_varianten=bool(koerper.get("mit_varianten", True)))
+                    mit_varianten=bool(koerper.get("mit_varianten", True))))
                 if bericht.ok:
                     # Die Kameraeinstellung des Trainings festhalten. Alles,
                     # was sich danach verstellt, ist ab jetzt meldbar.
@@ -5906,6 +6282,9 @@ def baue_handler(verarbeitung: Verarbeitung, zustand: Zustand,
                 art = {"erkennen": "betreiben"}.get(art, art)
                 if art not in ("einrichten", "anlernen", "betreiben", "messen"):
                     return self._json({"fehler": f"Betriebsart {art!r} unbekannt"}, 400)
+                if getattr(verarbeitung, "_testlauf", {}).get("laeuft") and art != "betreiben":
+                    return self._json({"ok": False, "fehler": "Testlauf läuft – erst abwarten (Einstellungen › Erkennung)",
+                                       "grund": "Testlauf läuft – erst abwarten (Einstellungen › Erkennung)"}, 409)
                 zustand.betriebsart = art
                 return self._json({"betriebsart": art})
 

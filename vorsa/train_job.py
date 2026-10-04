@@ -40,6 +40,31 @@ MIN_TEILE = 6          # unter so wenigen Vorlagen wiederholt sich jede Szene
 # laeuft das eigentliche Training in einem zweiten venv (~/m3-train-env,
 # numpy 2) als Unterprozess; der Server (numpy<2) stellt nur die Fotos frei
 # und legt die fertige .fbz auf den Chip.
+
+# 1.9.71: Gesamtfortschritt ueber die Phasen (Anteil am Gesamtlauf, grob
+# nach Dauer auf dem Pi geschaetzt).
+PHASEN_GEWICHT = (("Fotos freistellen", 0.15), ("TensorFlow laden", 0.05), ("Modell bauen", 0.02),
+                  ("Training", 0.68), ("Quantisieren", 0.04), ("Nach Akida umwandeln", 0.03),
+                  ("Auf den AKD1500 legen", 0.03))
+
+
+def _gesamt(phase: str, anteil: float = 0.0) -> float:
+    """Fortschritt 0..1 ueber alle Phasen: abgeschlossene Phasen voll, die
+    laufende anteilig. Unbekannte Phasen (z. B. aus dem Unterprozess) werden
+    dem Training zugeschlagen."""
+    vor = 0.0
+    for name, g in PHASEN_GEWICHT:
+        if phase.startswith(name):
+            return vor + g * max(0.0, min(1.0, anteil))
+        vor += g
+    # unbekannt: zwischen "TensorFlow laden" und Training
+    return 0.22 + 0.68 * max(0.0, min(1.0, anteil))
+
+
+def _phase_mit_gesamt(lauf, phase: str, schritt: int = 0, schritte: int = 0) -> None:
+    lauf.setze_phase(phase, schritt, schritte)
+    lauf.setze_gesamt(_gesamt(phase, (schritt / schritte) if schritte else 0.0))
+
 def _train_python() -> str:
     """Pfad zum Python der Trainingsumgebung - oder "" wenn keine da ist."""
     gesetzt = os.environ.get("VORSA_M3_PY")
@@ -68,8 +93,10 @@ def baue_arbeit_extern(zustand, verarbeitung, variante: str = "",
                                mit_varianten=mit_varianten)(lauf)
 
         # --- 1. Fotos freistellen (cv2, laeuft unter numpy<2) ---------
-        lauf.setze_phase("Fotos freistellen")
-        teile, namen, warnungen = freistellen_aus_zustand(zustand, mit_varianten)
+        _phase_mit_gesamt(lauf, "Fotos freistellen")
+        teile, namen, warnungen = freistellen_aus_zustand(
+            zustand, mit_varianten,
+            fortschritt=lambda i, n: _phase_mit_gesamt(lauf, "Fotos freistellen", i, n))
         for w in warnungen:
             lauf.melde(f"Hinweis: {w}")
         lauf.melde(f"{len(teile)} Vorlagen aus {len(namen)} Objekten")
@@ -97,7 +124,7 @@ def baue_arbeit_extern(zustand, verarbeitung, variante: str = "",
         projekt = str(Path(__file__).resolve().parent.parent)  # enthaelt vorsa/
         umg = dict(os.environ)
         umg["TF_CPP_MIN_LOG_LEVEL"] = "3"
-        lauf.setze_phase("Training (getrennte Umgebung)")
+        _phase_mit_gesamt(lauf, "TensorFlow laden")
         lauf.melde(f"starte {py}")
         ergebnis = {"ok": False, "grund": "kein Ergebnis vom Trainingsprozess"}
         try:
@@ -119,11 +146,11 @@ def baue_arbeit_extern(zustand, verarbeitung, variante: str = "",
                     lauf.melde("abgebrochen")
                     break
                 if zeile.startswith("@PHASE|"):
-                    lauf.setze_phase(zeile[7:])
+                    _phase_mit_gesamt(lauf, zeile[7:])
                 elif zeile.startswith("@STEP|"):
                     try:
                         _, i, n = zeile.split("|", 2)
-                        lauf.setze_phase("Training", int(i), int(n))
+                        _phase_mit_gesamt(lauf, "Training", int(i), int(n))
                     except Exception:
                         pass
                 elif zeile.startswith("@MELDE|"):
@@ -149,7 +176,7 @@ def baue_arbeit_extern(zustand, verarbeitung, variante: str = "",
 
         # --- 4. Fertige .fbz auf den Chip legen (akida, numpy<2) ------
         if Path(ziel).exists():
-            lauf.setze_phase("Auf den AKD1500 legen")
+            _phase_mit_gesamt(lauf, "Auf den AKD1500 legen")
             try:
                 verarbeitung.detektor_laden(ziel)
                 ergebnis["gemappt"] = bool(
@@ -185,10 +212,12 @@ def baue_arbeit(zustand, variante: str = "", schritte: int = 300,
         cell = px / grid
 
         # --- 1. Vorlagen freistellen ---------------------------------
-        lauf.setze_phase("Fotos freistellen")
+        _phase_mit_gesamt(lauf, "Fotos freistellen")
         lauf.melde(f"Variante {var.name}: {px}x{px}, Raster {grid}x{grid}, "
                    f"Zelle {cell:.0f} px")
-        teile, namen, warnungen = freistellen_aus_zustand(zustand, mit_varianten)
+        teile, namen, warnungen = freistellen_aus_zustand(
+            zustand, mit_varianten,
+            fortschritt=lambda i, n: _phase_mit_gesamt(lauf, "Fotos freistellen", i, n))
         for w in warnungen:
             lauf.melde(f"Hinweis: {w}")
         lauf.melde(f"{len(teile)} Vorlagen aus {len(namen)} Objekten")
@@ -205,7 +234,7 @@ def baue_arbeit(zustand, variante: str = "", schritte: int = 300,
                 "Pruefung erneut laufen lassen.")}
 
         # --- 2. TensorFlow ------------------------------------------
-        lauf.setze_phase("TensorFlow laden")
+        _phase_mit_gesamt(lauf, "TensorFlow laden")
         lauf.melde("TensorFlow wird geladen - auf dem Pi dauert das ~20 s")
         try:
             # MUSS vor dem ersten Import von TensorFlow stehen: danach ist die
@@ -226,7 +255,7 @@ def baue_arbeit(zustand, variante: str = "", schritte: int = 300,
         from .assignment import match_batch
         from .losses import LossWeights, format_losses, vorsa_loss
 
-        lauf.setze_phase("Modell bauen")
+        _phase_mit_gesamt(lauf, "Modell bauen")
         keras, herkunft = keras_modul()
         lauf.melde(f"Keras: {herkunft}")
         modell = build_keras(var)
@@ -271,7 +300,7 @@ def baue_arbeit(zustand, variante: str = "", schritte: int = 300,
             opt.apply_gradients(zip(grads, modell.trainable_variables))
 
             verlauf.append(float(verlust))
-            lauf.setze_phase("Training", schritt, schritte)
+            _phase_mit_gesamt(lauf, "Training", schritt, schritte)
             if schritt == 1 or schritt % 10 == 0 or schritt == schritte:
                 lauf.melde(f"{schritt:>4}/{schritte}  {format_losses(teile_v)}")
 
@@ -300,7 +329,7 @@ def baue_arbeit(zustand, variante: str = "", schritte: int = 300,
             gewichte = ""
             lauf.melde(f"Gewichte NICHT sicherbar: {str(exc)[:110]}")
 
-        lauf.setze_phase("Quantisieren")
+        _phase_mit_gesamt(lauf, "Quantisieren")
         try:
             qmodell = quantize_for_akida(modell)
         except Exception as exc:
@@ -309,7 +338,7 @@ def baue_arbeit(zustand, variante: str = "", schritte: int = 300,
                 + (f" — Das Training ist nicht verloren, die Gewichte liegen "
                    f"in {gewichte}." if gewichte else ""))}
 
-        lauf.setze_phase("Nach Akida umwandeln")
+        _phase_mit_gesamt(lauf, "Nach Akida umwandeln")
         ziel = str(Path(ausgabe).resolve())
         try:
             akida_modell = convert_to_akida(qmodell)
@@ -319,7 +348,7 @@ def baue_arbeit(zustand, variante: str = "", schritte: int = 300,
             return {"ok": False, "grund": f"Umwandeln: {str(exc)[:140]}"}
 
         # --- 5. Auf den Chip legen ----------------------------------
-        lauf.setze_phase("Auf den AKD1500 legen")
+        _phase_mit_gesamt(lauf, "Auf den AKD1500 legen")
         ergebnis = {"ok": True, "datei": ziel, "variante": var.name,
                     "schritte": len(verlauf), "verlust_anfang": round(anfang, 4),
                     "verlust_ende": round(ende, 4), "sekunden": round(dauer, 1),

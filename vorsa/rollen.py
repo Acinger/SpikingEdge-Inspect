@@ -35,7 +35,7 @@ BEDIENER = {
 }
 # Nur Admin.
 ADMIN = {
-    "/api/rollen", "/api/eaio", "/api/sps", "/api/vergessen", "/api/klasse_loeschen",
+    "/api/rollen", "/api/eaio", "/api/sps", "/api/sicherung", "/api/sicherung_pruefen", "/api/sicherung_einspielen", "/api/vergessen", "/api/klasse_loeschen",
     "/api/ereignisse_leeren", "/api/rezept_loeschen", "/api/preset_loeschen",
 }
 # Nicht ins Änderungsprotokoll (häufig und harmlos).

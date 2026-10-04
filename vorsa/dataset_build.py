@@ -282,31 +282,61 @@ def baue_stapel(teile: Sequence[Freigestellt], anzahl: int, px: int,
 
 
 # ----------------------------------------------------------------------
-def freistellen_aus_zustand(zustand, mit_varianten: bool = True
+FREISTELL_MAX_PX = 384     # das Modell sieht 256 px - mehr kostet nur Zeit
+
+
+def freistellen_aus_zustand(zustand, mit_varianten: bool = True,
+                            fortschritt=None
                             ) -> Tuple[List[Freigestellt], List[str], List[str]]:
     """Stellt alle gesammelten Fotos frei.
 
     Rueckgabe: (Teile, Klassennamen in Reihenfolge der Kennung, Warnungen).
+    fortschritt(i, n): je Foto, fuer die Anzeige.
+
+    1.9.71: NUR Original + Spiegelungen. Drehvarianten brachten fuer M3
+    nichts - baue_szene dreht und skaliert jedes Teil ohnehin zufaellig -
+    kosteten aber das 8- bis 32-Fache an Zeit (auf dem Pi Dutzende Minuten
+    ohne sichtbaren Fortschritt). Bilder vorher auf FREISTELL_MAX_PX.
     """
     from .assignment import GtObject as _G          # noqa: F401  (Doku)
-    from .augment import erzeuge_varianten
+    from .augment import erzeuge_varianten, AugmentConfig
 
     namen: List[str] = []
     teile: List[Freigestellt] = []
     warnungen: List[str] = []
+    klassen = sorted(zustand.klassen.values(), key=lambda x: x.id)
+    n_fotos = sum(len(k.prototypen) for k in klassen)
+    i_foto = 0
 
-    for idx, k in enumerate(sorted(zustand.klassen.values(), key=lambda x: x.id)):
+    for idx, k in enumerate(klassen):
         namen.append(k.name)
         gefunden = 0
         for datei in k.prototypen:
+            i_foto += 1
+            if fortschritt is not None:
+                try:
+                    fortschritt(i_foto, n_fotos)
+                except Exception:
+                    pass
             roh = zustand.prototyp_bild(datei)
             if roh is None:
                 continue
+            h, w = roh.shape[:2]
+            if max(h, w) > FREISTELL_MAX_PX:
+                f = FREISTELL_MAX_PX / float(max(h, w))
+                roh = cv2.resize(roh, (max(16, int(w * f)), max(16, int(h * f))),
+                                 interpolation=cv2.INTER_AREA)
+                h, w = roh.shape[:2]
             quellen = [roh]
             if mit_varianten:
-                h, w = roh.shape[:2]
+                a = k.augment
+                nur_spiegel = AugmentConfig(
+                    spiegeln_horizontal=bool(getattr(a, "spiegeln_horizontal", True)),
+                    spiegeln_vertikal=bool(getattr(a, "spiegeln_vertikal", False)),
+                    drehen_90=False, drehen_frei=False,
+                    haendigkeit=bool(getattr(a, "haendigkeit", False)))
                 platz = [GtObject(w / 2, h / 2, w * .6, h * .3, 0.0, idx)]
-                quellen = [b for _n, b, _o in erzeuge_varianten(roh, platz, k.augment)]
+                quellen = [b for _n, b, _o in erzeuge_varianten(roh, platz, nur_spiegel)]
             for b in quellen:
                 t = freistellen(b, idx)
                 if t is not None:

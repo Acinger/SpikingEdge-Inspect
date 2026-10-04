@@ -29,6 +29,7 @@ const b64 = async (u) => Buffer.from(await (await fetch(BASIS + u)).arrayBuffer(
   await warte(3000);
   w.eval(`spracheSetzen("${SPRACHE}")`);
   w.eval(`setzeModus("${MODUS}")`); await warte(2500);
+  if (process.env.VOR_JS) { w.eval(process.env.VOR_JS); await warte(3000); }   // z. B. weitere API-Antworten aufzeichnen
   const snap = await b64("/api/snapshot");
   const sprache = await (await fetch(BASIS + "/static/sprache_en.js")).text();
   const icon = await b64("/static/se_icon.webp");

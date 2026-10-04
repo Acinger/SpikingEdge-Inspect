@@ -1,4 +1,51 @@
-# SE Inspect 1.0.0-alpha.2 — release notes
+# SE Inspect 1.0.0-alpha.3 — release notes
+
+*2026-10-04 · third public alpha · licence PolyForm Noncommercial 1.0.0 (`LICENSE`, commercial use: `COMMERCIAL.md`)*
+
+This alpha is about the cell learning from its own operation and about measuring instead of guessing. Everything below was exercised on a Pi 5 with four AKD1500 M.2 modules against a real 48-scene test set (SD card, Allen key, foreign parts, empty table) — which is also where most of the fixes in this release come from.
+
+## New: the cell learns from operation (1.1-A)
+
+- Parts that were **unknown** during inspection land in the inspection archive. **Teach › Suggestions from operation** groups them by shape and colour and shows each group with thumbnails: *As new object*, *To object …*, *Background* or *Discard* — then **Train …**. A slider sets the grouping finer or coarser.
+- Also reachable from the "Re-teach recommended" card in Inspect.
+
+## New: threshold from the test set (1.1-B)
+
+- **Settings › Recognition › Threshold from the test set** runs every test-set scene through recognition and shows, for thresholds 30–95 %, hits, foreign parts detected, known parts reported as unknown and the false-confident rate. The suggestion is the threshold with the most hits at ≤ 1 % false-confident; if no threshold achieves that, it is marked as a **compromise** with a note on what actually helps.
+- **Calibration per object**: each object reaches a different confidence when recognised correctly (on the bench: SD card ~0.6, Allen key ~0.9). The test run measures this and rescales so that a typical hit sits at 90 % for every object — one threshold then fits all. Shown in the settings, discardable, marked as outdated after a new training.
+- The test set now has a **Foreign part** chip (expected: unknown) and is visible in both profiles under Inspect › Details; "Open test set" jumps there.
+
+## New: statistics and trend (1.1-C)
+
+- A persistent inspection journal (`pruefjournal.jsonl`) survives restarts. **Inspect › Trend**: today's numbers, stacked bars for the last 24 hours, a 14-day table, and a **drift warning** ("confidence dropping") when the mean confidence of the last 50 named parts falls ≥ 8 points below the first 50 after training.
+
+## Fixed
+
+- **M3 training looked stuck at "Isolating photos 0 %"**: it was isolating every photo in all 32 augmentation variants (3 872 passes on 687-px images, no progress). Rotation variants were useless for M3 (scene synthesis rotates anyway). Now original + mirror only, images capped at 384 px, progress per photo, and an **overall progress bar** across all phases with percent and colour (blue running, green done, red failed).
+- **Test run measured a different chain than live**: test scenes were 687-px crops, so the empty image was rejected by a shape check and empty scenes produced phantom parts. The empty image is now cropped to the capture window and scaled to the scene. The test run also measures strictly raw (calibration locked) and refuses mode switches while it runs.
+- **Empty image vs. rotation**: the empty image remembers the rotation it was taken at; if the image has been rotated since, it is not used and Setup/Inspect say so.
+- **Image rotation** survives a restart (`drehung.json`); rotate button in the zoom bar (locked during Inspect).
+- Two UI elements that jumped on every state refresh (Teach-zones button, First steps) are quiet now.
+
+## Known limitations
+
+- Alpha: interfaces, file layouts and the `vorsa_daten/` format may change between alphas without migration.
+- Silhouette matching cannot separate foreign parts with the same outline as a taught object (bench: a dark plastic chip vs. an SD card). Teaching such parts as *Background* is the only remedy in this release.
+- Digital I/O, the Modbus I/O-module driver and the PLC interface remain **untested on real I/O hardware**. Modbus has no authentication: isolated machine networks only.
+- The M3 training chain (TensorFlow → cnn2snn → AKD1500) has not yet been run end-to-end on the bench since the speed-up; report what you see.
+- Nothing in this software is a safety function (`SAFETY.md`).
+
+## Upgrading from alpha.2
+
+Pull, then `sudo systemctl restart vorsa`. Learned objects and settings in `vorsa_daten/` stay. New files: `pruefjournal.jsonl`, `kalibrierung.json`, `drehung.json`, `vorschlaege_erledigt.json` — all optional. `install.sh --config "<link from spikingedge.com/configure>"` writes the configuration files for a fresh cell.
+
+## Changes
+
+`CHANGELOG.md` lists every build 1.9.63 → 1.0.0-alpha.3; each has a reproducible patch script in `tools/patch_19xx_*.py`. New benches: `test_selbstlernen`, `test_trend`, `test_kalibrierung`, `test_m3_fortschritt`, `test_1_1_server`; new UI smokes: `smoke_elf`, `smoke_drehen`, `smoke_ruhig`, `smoke_laufbalken`.
+
+---
+
+# SE Inspect 1.0.0-alpha.2 — release notes (previous)
 
 *2026-10-03 · second public alpha · licence PolyForm Noncommercial 1.0.0 (`LICENSE`, commercial use: `COMMERCIAL.md`)*
 

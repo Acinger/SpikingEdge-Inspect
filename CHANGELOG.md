@@ -2,6 +2,72 @@
 
 Format: Build-String (Footer) · Datum · Inhalt. Älteres siehe `PROJEKTBERICHT_ALPHA.md` Anhang B.
 
+## 1.0.0-alpha.3 (2026-10-04) · dritte öffentliche Alpha
+
+- Versionsstring `1.0.0-alpha.3`; Inhalt = 1.9.74-testleer (Version 1.1: Vorschläge aus dem Betrieb, Schwelle aus dem Testsatz mit Kalibrierung, Trend; M3-Fortschritt; Testlauf-Fixes; Drehknopf; Installer mit Konfiguration; Komplettsicherung). `RELEASE_NOTES.md`, README-Status, CITATION aktualisiert. GitHub-Issue-Vorlagen (`.github/ISSUE_TEMPLATE/`) erstmals im Paket.
+
+## 1.9.74-testleer (2026-10-04)
+
+- **Testlauf benutzt jetzt das Leerbild** wie die Live-Erkennung. Vorher: Testszene (687-px-Ausschnitt) ≠ Form des Kamerabilds → kein Leerbild → auf leeren Szenen „zwei SD-Karten“ (0,71/0,99), live auf derselben Fläche „Kein Teil“. Jetzt wird das Leerbild am Aufnahmefenster zugeschnitten und auf die Szene skaliert. Bench `test_1_1_server.py` erweitert. Patch `tools/patch_1974_testlauf_leerbild.py`.
+
+## 1.9.73-roh (2026-10-04)
+
+- **Testlauf misst garantiert roh:** ab Szene 10 waren die Ist-Werte plötzlich kalibriert (SD 0,87–0,94 statt 0,55–0,61) – etwas setzte die Kalibrierung mitten im Lauf. Jetzt Sperrflag am Lerner (während des Laufs immer roh), `_kalib_anwenden` während des Laufs ein No-op, jede Anwendung im Serverlog. Patch `tools/patch_1973_roh.py`.
+
+## 1.9.72-testlauf (2026-10-04)
+
+- **Testlauf gegen Moduswechsel geschützt:** auf dem Pi lieferte ein Lauf ab Szene 20 nur noch leere Ergebnisse – währenddessen war auf Anlernen umgeschaltet worden. Jetzt lehnt der Server einen Moduswechsel während des Testlaufs ab (409, Meldung in der Oberfläche); bricht der Modus trotzdem weg, endet der Lauf mit klarem Grund statt mit falschen Zahlen. Bench `test_1_1_server.py` erweitert. Patch `tools/patch_1972_testlauf_fest.py`.
+
+## 1.9.71-m3fortschritt (2026-10-04) · M3-Training hängt nicht mehr still
+
+- **Befund:** „Fotos freistellen 0 %“ war kein Hänger, sondern 121 Fotos × 32 Augmentierungsvarianten = 3 872 Freistellungen auf 687-px-Bildern im Server, ohne Fortschrittsmeldung – auf dem Pi Dutzende Minuten. Die Drehvarianten sind für M3 wertlos (die Szenensynthese dreht und skaliert jedes Teil ohnehin zufällig).
+- **Schneller:** nur Original + Spiegelungen (Händigkeit bleibt beachtet), Bilder vorher auf 384 px. Rund 10- bis 40-mal weniger Arbeit; hier 0,1 s je Foto.
+- **Fortschritt sichtbar:** „Fotos freistellen i von n“ und ein **Gesamtfortschritt über alle Phasen** (Freistellen 15 %, TensorFlow 5 %, Training 68 %, Quantisieren/Umwandeln 7 %, Chip 3 %) in `/api/lauf` (`gesamt`).
+- **Fortschrittsbalken farbig:** Prozentzahl, blau während des Laufs, grün fertig, rot bei Fehler, gestreift pulsierend bei Phasen ohne Zählung – in der großen Zeile unterm Bild und im Training-Dialog.
+- Bench `tools/test_m3_fortschritt.py`, Smoke `tools/smoke_laufbalken.js`, Entwicklerwerkzeug `tools/ui_statisch.js`, CI. Patch `tools/patch_1971_m3_fortschritt.py`.
+
+## 1.9.70-kalibrierung (2026-10-04)
+
+Anlass: auf dem Pi schlug „Schwelle aus dem Testsatz“ 96 % vor – danach wurde fast nichts mehr benannt. Die SD-Karte erreicht richtig erkannt nur ~0,6, der Inbusschlüssel ~0,9; leere Szenen lieferten Phantomteile (Leerbild vor der Drehung aufgenommen).
+
+- **Neuer Schwellen-Vorschlag:** unter den Schwellen mit höchstens 1 % falsch-sicher die mit den meisten Treffern. Bleiben dabei weniger als 70 % Treffer, ist das Ziel nicht erreichbar – dann die beste Abwägung (Treffer − 3 × falsch-sicher), klar als **Kompromiss** gekennzeichnet, mit Hinweis, was wirklich hilft.
+- **Kalibrierung je Objekt:** der Testlauf misst roh, bestimmt je Objekt die typische Sicherheit richtiger Treffer (ab 3 Einzelszenen) und rechnet sie so um, dass ein typischer Treffer überall bei 90 % liegt (`kalibrierung.json`, gilt sofort für Erkennung und Prüfung). Nach neuem Training als „veraltet“ markiert. Anzeige + „Kalibrierung verwerfen“ in Einstellungen › Erkennung. Mit den Pi-Daten: 23 statt 12 von 30 Treffern beim Vorschlag, bei 80 % Schwelle 22 statt 10.
+- **Leerbild passt zur Drehung:** das Leerbild merkt sich die Drehung; passt sie nicht mehr, wird es nicht benutzt, der Schritt „Leerbild“ ist wieder offen und Einrichten sowie die Prüfspalte warnen.
+- Bench `tools/test_kalibrierung.py` (Pi-Testlauf nachgebaut), `test_1_1_server.py` und `smoke_elf.js` erweitert, CI. Patch `tools/patch_1970_kalibrierung.py`.
+
+## 1.9.69-ruhig (2026-10-04)
+
+- **Nichts springt mehr im Zustandstakt** (Video vom Pi): der Knopf „Lernzonen“ im Videokopf wurde im Anlernen bei jedem Abruf gezeigt und gleich wieder versteckt (Einkamera) – Kamera/Ansicht/Vollbild rutschten seitlich hin und her. „Erste Schritte“ in der Seitenleiste verschwand bei 6/6 und kam bei kurzen 5/6 zurück – die ganze Leiste sprang. Jetzt eine Regel für den Knopf; „Erste Schritte“ bleibt nach 6/6 für die Sitzung weg (Einstellungen › Allgemein öffnet es weiter).
+- Smoke `tools/smoke_ruhig.js`, CI erweitert. Patch `tools/patch_1969_ruhig.py`.
+
+## 1.9.68-testsatz (2026-10-04)
+
+- **Testsatz in jedem Profil:** bisher nur im Profil „stationär“ sichtbar – `sync.ps1` legt auf dem Pi aber `VORSA_PROFIL=linie` an, dort fehlte er. Jetzt oberster Block im Reiter **Prüfen › Prüfdetails**, in jedem Profil.
+- Einstellungen › Erkennung › „Schwelle aus dem Testsatz“: Knopf **„Testsatz öffnen“** springt direkt dorthin und klappt ihn auf. Smoke `smoke_elf.js` erweitert. Patch `tools/patch_1968_testsatz_ort.py`.
+
+## 1.9.67-fremdteil (2026-10-04)
+
+- Testsatz: neuer Chip **„Fremdteil“** (Soll = unbekannt). Vorher ließ sich in der Oberfläche keine Fremdteil-Szene anlegen – die Schwelle aus dem Testsatz konnte „Unbekanntes erkennt“ dann nicht messen. Smoke `smoke_elf.js` erweitert. Patch `tools/patch_1967_fremdteil.py`.
+
+## 1.9.66-drehen (2026-10-04)
+
+- **Drehknopf in der Zoomleiste** (neben 1:1): dreht das Kamerabild um 90°, der Winkel steht am Knopf. Im Prüfen gesperrt – die Lage gilt für Lernen und Prüfen gemeinsam.
+- Die Bilddrehung **bleibt nach einem Neustart erhalten** (`vorsa_daten/drehung.json`); vorher fiel sie auf 0° zurück. Winkel steht in `/api/state`.
+- Smoke `tools/smoke_drehen.js`, CI erweitert. Patch `tools/patch_1966_drehen.py`.
+
+## 1.9.65-selbstlernen (2026-10-03) · Version 1.1: selbstlernende Zelle, Schwelle aus dem Testsatz, Trend
+
+- **Vorschläge aus dem Betrieb** (`vorsa/selbstlernen.py`): unbekannte Teile aus dem Prüfarchiv werden nach Form und Farbe gruppiert. Anlernen › Karte „Vorschläge aus dem Betrieb“ → Dialog: als neues Objekt, zu einem Objekt, Hintergrund oder verwerfen; danach „Training …“. Regler feiner/gröber. `/api/vorschlaege`, `/api/vorschlag_anwenden`.
+- **Schwelle aus dem Testsatz** (`vorsa/schwelle.py`): Einstellungen › Erkennung › Testlauf spielt alle Testsatz-Szenen durch die Erkennung, zeigt die Kurve 30–95 % (Treffer, Fremdteil erkannt, Bekanntes unbekannt, Falsch-sicher) und schlägt die kleinste Schwelle mit ≤ 0,5 % falsch-sicher vor – ein Klick übernimmt sie. `/api/testlauf`.
+- **Trend** (`vorsa/trend.py`): dauerhaftes Prüfjournal (`pruefjournal.jsonl`), Prüfung › Reiter „Trend“ mit 24-h-Balken, 14-Tage-Tabelle und **Drift-Warnung** („Sicherheit sinkt“, auch in der Prüfspalte). `/api/trend`.
+- Englisch vollständig (Nachtrag 19). Benches `test_selbstlernen.py`, `test_trend.py`, `test_1_1_server.py`, Smoke `smoke_elf.js`, CI erweitert. Patches `tools/patch_1964_selbstlernen.py` (Server), `tools/patch_1965_ui11.py` (Oberfläche). Spezifikation `SE_INSPECT_1_1_SPEC.md`.
+
+## 1.9.63-sicherung (2026-10-03) · Installer mit Konfiguration + Komplettsicherung (I4)
+
+- **`install.sh --config "<Link>"`**: übernimmt den Link aus spikingedge.com/configure/ und schreibt `start.local.sh`, `vorsa_daten/eaio.json`, `sps.json`, `pruef.json` (alte Dateien als `*.vor-<Zeit>` gesichert, `pruef.json` zusammengeführt). Einzeln: `python3 tools/konfig_anwenden.py "<Link>" [--zeigen]`. Ausgabe identisch mit dem Website-Konfigurator (abgeglichen).
+- **Komplettsicherung** (`vorsa/sicherung.py`): Einstellungen › Wartung › „Sicherung herunterladen“ – eine ZIP mit dem ganzen Datenordner (Objekte, Fotos, Gelerntes, Prüfprogramme, Leerbilder, Einstellungen, I/O, Benutzer, Testsatz, Protokolle) und Manifest mit Prüfsummen. „Sicherung einspielen …“ prüft (Art, Pfade, Prüfsummen, Größe), zeigt Herkunft und Build, sichert den aktuellen Stand nach `vorsa_sicherungen/` und startet den Dienst neu. Nur Admin, wenn Rollen aktiv sind. Nicht enthalten: der trainierte M3-Detektor.
+- Benches `tools/test_konfig.py`, `tools/test_sicherung.py` (inkl. eigenem Server: Download, Prüfen, Einspielen, Neustartcode); CI erweitert. Patch `tools/patch_1963_sicherung.py`.
+
 ## 1.0.0-alpha.2 (2026-10-03) · zweite öffentliche Alpha
 
 - Versionsstring `1.0.0-alpha.2`; Inhalt = 1.9.62-training (UI-Pakete 1–4, I/O, Rollen, Modbus, Training-Begriff). `RELEASE_NOTES.md`, README-Status, CITATION aktualisiert.

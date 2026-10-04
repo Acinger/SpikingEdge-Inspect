@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Configure your cell
+    url: https://spikingedge.com/configure/
+    about: Parts list, wiring sketch and configuration files for your setup.
+  - name: Commercial use
+    url: https://spikingedge.com/get-vorsa/#licence-in-three-sentences
+    about: Free for non-commercial use — commercial use by agreement.

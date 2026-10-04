@@ -5,6 +5,8 @@
 #   bash install.sh            # full: packages, Akida driver, runtime env, service
 #   bash install.sh --laptop   # no hardware: runtime env only, CPU stand-in for the chip
 #   bash install.sh --no-service
+#   bash install.sh --config "https://spikingedge.com/configure/#aufbau=linie&io=opto"
+#                              # applies the configurator link (start.local.sh, I/O, PLC) - see tools/konfig_anwenden.py
 #
 # Follows guide chapters 04–07 (spikingedge.com/guide/). Every step prints what it
 # checks and stops at the first failure with the chapter to read. Re-running is safe.
@@ -12,13 +14,16 @@
 # ============================================================================
 set -euo pipefail
 HIER="$(cd "$(dirname "$0")" && pwd)"
-LAPTOP=0; SERVICE=1
-for a in "$@"; do
-  case "$a" in
+LAPTOP=0; SERVICE=1; KONFIG=""
+while [ $# -gt 0 ]; do
+  case "$1" in
     --laptop) LAPTOP=1; SERVICE=0 ;;
     --no-service) SERVICE=0 ;;
-    *) echo "unbekannte Option: $a"; exit 2 ;;
+    --config) shift; KONFIG="${1:-}"; [ -n "$KONFIG" ] || { echo "--config braucht den Link aus spikingedge.com/configure/"; exit 2; } ;;
+    --config=*) KONFIG="${1#--config=}" ;;
+    *) echo "unbekannte Option: $1"; exit 2 ;;
   esac
+  shift
 done
 schritt() { printf '\n\033[1;36m== %s ==\033[0m\n' "$1"; }
 ok()      { printf '   \033[32mok\033[0m  %s\n' "$1"; }
@@ -88,6 +93,14 @@ schritt "4. Selbsttest ohne Hardware"
 ( cd "$HIER" && python3 tools/test_mehrbild.py >/dev/null && python3 tools/test_hypothesen.py >/dev/null && python3 tools/test_verteiler.py >/dev/null ) \
   && ok "Benches Mehrbild / Hypothesen / Verteiler gruen" || stop "eine Bench ist rot" "tools/test_*.py einzeln ausfuehren und Ausgabe melden."
 
+if [ -n "$KONFIG" ]; then
+  schritt "4b. Konfiguration aus dem Konfigurator"
+  # Vorab pruefen (wirft bei ungueltigem Link), dann schreiben.
+  ( cd "$HIER" && python3 tools/konfig_anwenden.py "$KONFIG" --zeigen >/dev/null ) || stop "Link nicht lesbar" "Link aus spikingedge.com/configure/ komplett kopieren (mit #...)."
+  ( cd "$HIER" && python3 tools/konfig_anwenden.py "$KONFIG" ) | sed 's/^/   /'
+  ok "Konfiguration angewendet (alte Dateien als *.vor-<Zeit> gesichert)"
+fi
+
 if [ "$SERVICE" = 1 ]; then
   schritt "5. Dienst"
   USER_NAME="$(id -un)"
@@ -98,11 +111,12 @@ if [ "$SERVICE" = 1 ]; then
   sudo systemctl enable --now vorsa
   sleep 6
   systemctl is-active --quiet vorsa && ok "Dienst laeuft: http://$(hostname -I | awk '{print $1}'):8080" || stop "Dienst nicht aktiv" "journalctl -u vorsa -n 50"
-  echo "   Profil: $(grep -E '^export VORSA_PROFIL' "$HIER/start.sh" || echo 'stationaer (Standard)')"
-  echo "   Band/Arm nur im Profil linie (start.sh)."
+  echo "   Profil: $(grep -hE '^export VORSA_PROFIL' "$HIER/start.local.sh" "$HIER/start.sh" 2>/dev/null | tail -1 || echo 'stationaer (Standard)')"
+  echo "   Anlagen-Einstellungen stehen in start.local.sh (wird nie ueberschrieben, ausser mit --config)."
 else
   schritt "5. Start von Hand"
   echo "   source ~/akida-env/bin/activate && cd $HIER && python3 tools/run_web.py --synthetisch --port 8080"
+  [ -n "$KONFIG" ] && echo "   (mit --config auf dem Pi: bash start.sh - liest start.local.sh)"
 fi
 
 schritt "fertig"

@@ -8,8 +8,8 @@ Learns a new part on the chip in seconds, classifies by aligned silhouettes, mea
 | | |
 |---|---|
 | Licence | PolyForm Noncommercial 1.0.0 — free for non-commercial use, see `LICENSE`; commercial use: `COMMERCIAL.md` |
-| Status | **alpha** — build `1.0.0-alpha.2` (the UI footer shows the running build). Release notes: `RELEASE_NOTES.md` |
-| Hardware | Pi 5 (Bookworm 64-bit, kernel 6.12), 1–4 × AKD1500 on PCIe, Camera Module 3; belt and arm optional |
+| Status | **alpha** — build `1.0.0-alpha.3` (the UI footer shows the running build). Release notes: `RELEASE_NOTES.md` |
+| Hardware | Pi 5 (Bookworm 64-bit, kernel 6.12), 1–4 × AKD1500 M.2 on a Geekworm X1011 carrier (ASM1184e PCIe switch), Camera Module 3; belt and arm optional |
 | Without hardware | the full UI with synthetic scenes and a CPU stand-in for the chip |
 | Docs | [Guide (12 chapters)](https://spikingedge.com/guide/) · [Docs](https://spikingedge.com/docs/) · [Demos](https://spikingedge.com/demos/) · [Evidence](https://spikingedge.com/evidence/) |
 | German README | `README.md` (original project notes, VORSA-M3 architecture) |

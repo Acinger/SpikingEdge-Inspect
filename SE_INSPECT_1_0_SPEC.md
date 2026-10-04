@@ -32,7 +32,7 @@ Reihenfolge der Umbenennung: erst Sichtbares (UI-Titel, Footer-Build-String, Doc
 | Profil | Hardware | Wofür |
 |---|---|---|
 | **Laptop** | nur Python, numpy < 2, OpenCV | `--synthetisch`: komplette UI, Segmentierung, Messung, Hypothesen mit synthetischen Szenen; Lernen/Erkennen als Stub mit klarer Kennzeichnung |
-| **Minimal** | Pi 5, 1 × AKD1500 auf PCIe-Träger, 1 × Camera Module 3, feste Beleuchtung | der Einstieg für die Community (< 1 000 €); alles aus 1.0 funktioniert, nur mit einer Karte langsamer und mit weniger Prototypen |
+| **Minimal** | Pi 5, 1 × AKD1500 (M.2) auf Träger, 1 × Camera Module 3, feste Beleuchtung | der Einstieg für die Community (< 1 000 €); alles aus 1.0 funktioniert, nur mit einer Karte langsamer und mit weniger Prototypen |
 | **Voll** | Pi 5, 4 × AKD1500, 1 × Camera Module 3 | Referenzaufbau; Hypothesen-Parallelität, Kapazität, Ausfallsicherheit |
 
 Beleuchtung ist Teil des Profils: 1.0 dokumentiert eine empfohlene Leuchte (diffus, flackerfrei, fester Winkel) und misst alle Qualitätsziele unter dieser Beleuchtung. Blendflecken werden trotzdem gefiltert (heute: `glanzmaske`), weil keine Beleuchtung perfekt ist.

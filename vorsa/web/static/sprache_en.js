@@ -532,4 +532,113 @@ Object.assign(window.SPRACHEN.en, {
   "Oben rechts „Training …“ öffnet den Dialog. Er zeigt vorher, was hingeht, und lässt die Wahl zwischen den beiden Wegen:": "“Train …” at the top right opens the dialog. It shows beforehand what goes in and lets you choose between the two paths:"
 });
 
+/* ---- Nachtrag 18 (1.9.63 Sicherung) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Komplettsicherung": "Full backup", "Sicherung herunterladen": "Download backup", "Sicherung einspielen …": "Restore backup …",
+  "Eine Datei mit allem, was diese Anlage kann: Objekte und Fotos, Gelerntes, Prüfprogramme, Leerbilder, Einstellungen, Ein-/Ausgänge, Benutzer, Testsatz und Protokolle. Zum Aufbewahren oder um einen zweiten Pi gleich einzurichten.": "One file with everything this cell knows: objects and photos, what was learned, jobs, empty images, settings, I/O, users, test set and logs. To keep, or to set up a second Pi the same way.",
+  "Sicherung wird erstellt …": "Creating backup …", "Sicherung wird geprüft …": "Checking backup …", "Sicherung einspielen": "Restore backup", "Einspielen": "Restore",
+  "Eingespielt — SE Inspect startet neu, die Seite lädt gleich neu …": "Restored — SE Inspect is restarting, the page will reload …",
+  "Kein Neustart erkannt — läuft SE Inspect ohne Dienst? Dann von Hand neu starten.": "No restart detected — is SE Inspect running without the service? Then restart it by hand."
+});
+
+/* ---- Nachtrag 19 (1.9.65 Version 1.1: Vorschlaege, Trend, Schwelle aus dem Testsatz) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Vorschläge aus dem Betrieb": "Suggestions from operation", "Vorschläge ansehen": "View suggestions",
+  "Teile, die beim Prüfen": "Parts that were", "unbekannt": "unknown",
+  "waren, nach Form und Farbe gruppiert. Du entscheidest je Gruppe – danach „Training …“.": "during inspection, grouped by shape and colour. You decide per group – then “Train …”.",
+  "feiner": "finer", "gröber": "coarser", "Gruppierung feiner oder gröber": "Grouping finer or coarser",
+  "{} Fotos →": "{} photos →", "Erst nach dem Training erkennt die Anlage das Objekt.": "The cell recognises the object only after training.",
+  "{}× unbekannt": "{}× unknown", "· ähnelt": "· resembles",
+  "Name, z. B. Mutter M8": "Name, e.g. nut M8", "Als neues Objekt": "As new object", "Zu vorhandenem Objekt": "To existing object", "Zu Objekt …": "To object …",
+  "Hintergrund": "Background", "Verwerfen": "Discard", "Nicht mehr vorschlagen": "Don't suggest again",
+  "Unterlage, Störteile – damit die Anlage dazu „nichts“ sagt": "Base, stray parts – so the cell says “nothing” for them",
+  "{} unbekannt": "{} unknown",
+  "{} Gruppe ähnlicher Teile, die beim Prüfen unbekannt waren.": "{} group of similar parts that were unknown during inspection.",
+  "{} Gruppen ähnlicher Teile, die beim Prüfen unbekannt waren.": "{} groups of similar parts that were unknown during inspection.",
+  "Unbekannte Teile liegen vor, aber noch keine Gruppe ähnlicher Teile.": "There are unknown parts, but no group of similar parts yet.",
+  "Bilder werden verglichen …": "Comparing images …",
+  "{} unbekannte Bilder, aber keine Gruppe mit mindestens zwei ähnlichen Teilen.": "{} unknown images, but no group with at least two similar parts.",
+  "Regler Richtung „gröber“ schieben – oder weiter prüfen, bis sich Teile wiederholen.": "Move the slider towards “coarser” – or keep inspecting until parts repeat.",
+  "Noch keine unbekannten Teile aus dem Betrieb.": "No unknown parts from operation yet.",
+  "Was beim Prüfen unbekannt ist, landet hier – gruppiert, zum Übernehmen.": "Whatever is unknown during inspection ends up here – grouped, ready to adopt.",
+  "{} Bilder verworfen.": "{} images discarded.", "Nicht möglich": "Not possible",
+  "Konfidenzschwelle {} % übernommen": "Confidence threshold {} % applied",
+  "Trend": "Trend", "Trend wird geladen …": "Loading trend …", "Sicherheit sinkt": "Confidence dropping",
+  "— {} % nach dem letzten Training, jetzt {} % (je {} Teile). Meist Licht, Kamera oder neue Teilevarianten – erst dort nachsehen, dann ggf. nachtrainieren.": "— {} % after the last training, now {} % ({} parts each). Usually light, camera or new part variants – check there first, then retrain if needed.",
+  "Sicherheit stabil · {} % → {} %": "Confidence stable · {} % → {} %",
+  "Drift-Prüfung ab {} benannten Teilen nach dem Training · bisher {}": "Drift check from {} named parts after training · so far {}",
+  "Heute": "Today", "{} Teile im Journal": "{} parts in the log", "Teile": "Parts", "Gut": "Good", "Unbekannt": "Unknown", "Ausschuss": "Reject",
+  "Letzte 24 Stunden": "Last 24 hours", "max. {} / h": "max. {} / h", "jetzt": "now", "gut": "good",
+  "Letzte 14 Tage": "Last 14 days", "Tag": "Day", "Unbek.": "Unkn.", "Aussch.": "Rej.", "Sicherheit": "Confidence",
+  "{}:00 · {} Teile": "{}:00 · {} parts", "{}:00 · {} Teile · {} % gut · {} % unbekannt": "{}:00 · {} parts · {} % good · {} % unknown",
+  "— {} % → {} % seit dem letzten Training.": "— {} % → {} % since the last training.", "Trend ansehen": "View trend",
+  "Schwelle aus dem Testsatz": "Threshold from the test set",
+  "Spielt jede Testsatz-Szene durch das Gelernte und misst für jede Schwelle von 30 bis 95 %, wie oft richtig, unbekannt oder falsch-sicher benannt wird. Gut sind etwa 50 Szenen, darunter Fremdteile („unbekannt“). Prüfen pausiert so lange.": "Runs every test-set scene through what was learned and measures, for each threshold from 30 to 95 %, how often parts are named correctly, as unknown or falsely confident. About 50 scenes work well, including foreign parts (“unknown”). Inspection pauses meanwhile.",
+  "Szene {} von {} …": "Scene {} of {} …", "Vorschlag:": "Suggestion:",
+  "— die kleinste Schwelle, bei der höchstens {} % der Teile falsch-sicher benannt werden.": "— the lowest threshold at which at most {} % of parts are named with false confidence.",
+  "Keine Schwelle erreicht das Ziel – erst mehr und bessere Lernfotos, dann neu messen.": "No threshold reaches the target – first more and better training photos, then measure again.",
+  "· {} Szenen · {}": "· {} scenes · {}", "· {} Szenen ·": "· {} scenes ·",
+  "Schwelle": "Threshold", "Treffer": "Hits", "Fremdteil erkannt": "Foreign part detected", "Bekanntes unbekannt": "Known as unknown", "Falsch-sicher": "False-confident",
+  "{} % übernehmen": "Apply {} %", "Neu messen": "Measure again", "Testlauf starten": "Start test run", "{} Szenen im Testsatz": "{} scenes in the test set",
+  "Testsatz leer – Szenen unter Prüfung › Testsatz aufnehmen": "Test set empty – capture scenes under Inspection › Test set",
+  "Nur {} Szenen – der Vorschlag ist grob. Ab etwa 50 Szenen (mit Fremdteilen) wird er belastbar.": "Only {} scenes – the suggestion is rough. From about 50 scenes (with foreign parts) it becomes reliable.",
+  "Keine Fremdteil-Szenen im Testsatz – ob die Anlage Unbekanntes erkennt, ist so nicht geprüft.": "No foreign-part scenes in the test set – whether the cell detects unknown parts is not checked this way.",
+  "Jetzt „Training …“ – erst danach erkennt die Anlage das Objekt.": "Now “Train …” – only then does the cell recognise the object.",
+  "Name fehlt": "Name missing", "keine Bilder": "no images", "Objekt unbekannt": "Object unknown", "läuft schon": "already running",
+  "Testsatz leer – erst Szenen aufnehmen (Prüfung › Testsatz)": "Test set empty – capture scenes first (Inspection › Test set)",
+  "Linie läuft – erst stoppen": "Line running – stop it first", "nichts gelernt – erst trainieren": "nothing learned – train first",
+  "Testlauf nicht möglich": "Test run not possible",
+  "Stehende Szene über N Bilder mitteln: weniger Rauschen (1 = aus)": "Average a still scene over N frames: less noise (1 = off)"
+});
+
+/* ---- Nachtrag 20 (1.9.66 Drehknopf) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Bild 90° drehen": "Rotate image 90°", "Bild 90° drehen (jetzt {}°)": "Rotate image 90° (now {}°)",
+  "Drehen nur in Einrichten oder Anlernen – die Lage gilt für Lernen und Prüfen": "Rotate only in Set up or Teach – the orientation applies to teaching and inspection"
+});
+
+/* ---- Nachtrag 21 (1.9.67 Fremdteil) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Fremdteil": "Foreign part", "Fremdteil ×{}": "Foreign part ×{}",
+  "Teil, das die Anlage NICHT benennen soll (Störteil, fremdes Teil) – Soll: unbekannt. Rechtsklick / Umschalt-Klick: eins weniger": "Part the cell must NOT name (stray or foreign part) – expected: unknown. Right-click / Shift-click: one less"
+});
+
+/* ---- Nachtrag 22 (1.9.68 Testsatz) ---- */
+Object.assign(window.SPRACHEN.en, { "Testsatz öffnen": "Open test set" });
+
+/* ---- Nachtrag 23 (1.9.70 Kalibrierung) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Kompromiss:": "Compromise:", "— beste Abwägung zwischen Treffern und Falschbenennungen.": "— best balance between hits and false names.",
+  "— die meisten Treffer bei höchstens {} % falsch-sicher.": "— the most hits with at most {} % falsely confident.",
+  "Kalibrierung je Objekt": "Calibration per object", "vom letzten Training – Testlauf wiederholen": "from the last training – repeat the test run",
+  "typisch {} % → 90 %": "typically {} % → 90 %",
+  "Jedes Objekt erreicht richtig erkannt eine andere Sicherheit. Die Anlage rechnet sie so um, dass ein typischer Treffer überall bei 90 % liegt – dann passt eine Schwelle für alle.": "Each object reaches a different confidence when recognised correctly. The cell rescales it so a typical hit sits at 90 % for every object – then one threshold fits all.",
+  "Kalibrierung verwerfen": "Discard calibration",
+  "Nach dem Testlauf wird die Sicherheit je Objekt kalibriert (ab 3 richtig erkannten Einzelszenen je Objekt).": "After the test run, confidence is calibrated per object (from 3 correctly recognised single scenes per object).",
+  "Keine Schwelle erreicht beides – viele Treffer UND kaum Falschbenennungen. Der Vorschlag ist ein Kompromiss ({} % Treffer, {} % falsch-sicher). Besser wird es nur durch bessere Trennung: Leerbild neu, mehr Lernfotos in verschiedenen Lagen, Störteile als Hintergrund lernen.": "No threshold achieves both – many hits AND hardly any false names. The suggestion is a compromise ({} % hits, {} % falsely confident). Only better separation helps: new empty image, more training photos in different positions, teach stray parts as background.",
+  "Das Leerbild passt nicht mehr – das Bild wurde seit der Aufnahme gedreht. Es wird nicht benutzt. Teil wegnehmen und neu merken.": "The empty image no longer fits – the image was rotated since it was captured. It is not used. Remove the part and capture it again.",
+  "Leerbild veraltet": "Empty image outdated",
+  "— seit der Aufnahme wurde das Bild gedreht. Ohne passendes Leerbild meldet die Anlage leicht Teile, wo keine sind.": "— the image was rotated since it was captured. Without a matching empty image the cell easily reports parts where there are none.",
+  "Zum Einrichten": "Go to Set up"
+});
+
+/* ---- Nachtrag 24 (Pruefspalte, Reste) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Soll: leer": "Expected: empty", "Soll: Fremdteil": "Expected: foreign part",
+  "Klasse wählen → Bild wird Lernfoto. Danach Chip-Lernen ausführen.": "Choose a class → the image becomes a training photo. Then run chip learning."
+});
+
+/* ---- Nachtrag 25 (1.9.71 M3-Fortschritt) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Fotos freistellen": "Isolating photos", "TensorFlow laden": "Loading TensorFlow", "Modell bauen": "Building model",
+  "Quantisieren": "Quantising", "Nach Akida umwandeln": "Converting to Akida", "Auf den AKD1500 legen": "Mapping onto the AKD1500",
+  "Training (getrennte Umgebung)": "Training (separate environment)"
+});
+
+/* ---- Nachtrag 26 (1.9.72 Testlauf) ---- */
+Object.assign(window.SPRACHEN.en, {
+  "Testlauf läuft – erst abwarten (Einstellungen › Erkennung)": "Test run in progress – wait for it to finish (Settings › Recognition)",
+  "RuntimeError: Betriebsart wurde während des Testlaufs gewechselt – Lauf abgebrochen, bitte wiederholen": "RuntimeError: Mode was changed during the test run – run aborted, please repeat"
+});
+
 if (window.spracheNachladen) window.spracheNachladen();

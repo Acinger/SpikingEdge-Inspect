@@ -1027,6 +1027,22 @@ class EdgeLerner:
                 l = self._karten_locks[ki] = threading.Lock()
             return l
 
+    def _kalibriere(self, anteile: np.ndarray) -> np.ndarray:
+        """1.9.70: Sicherheit je Objekt kalibriert (siehe vorsa/schwelle.py).
+        kalibrierung = {Objektname: typische rohe Sicherheit richtiger
+        Treffer}; ohne Eintrag bleibt der Wert roh."""
+        if getattr(self, "_kalib_sperre", False):     # Testlauf: immer roh
+            return anteile
+        kal = getattr(self, "kalibrierung", None) or {}
+        if not kal:
+            return anteile
+        a = np.array(anteile, dtype=np.float64)
+        for i, n in enumerate(self.klassen):
+            r = kal.get(n)
+            if r:
+                a[i] = min(1.0, a[i] / float(r) * 0.9)
+        return a
+
     def _urteil(self, x: np.ndarray, pro_klasse: np.ndarray, sieger) -> dict:
         """Urteil aus Klassenpotentialen - eine Stelle fuer Verbund und
         Einzelkarte (Wiederfindung, Reinheit, unklar, unbekannt, warum)."""
@@ -1035,7 +1051,7 @@ class EdgeLerner:
         nenner = max(int(nw * 0.35), min(nw, probe_punkte), 8)
         wiederfindung = np.clip(pro_klasse / nenner, 0.0, 1.0)
         reinheit = np.clip(pro_klasse / max(probe_punkte, 8), 0.0, 1.0)
-        anteile = np.minimum(wiederfindung, reinheit)
+        anteile = self._kalibriere(np.minimum(wiederfindung, reinheit))
         beste = int(np.argmax(pro_klasse))
         sortiert = np.sort(pro_klasse)[::-1]
         vorsprung = (float(sortiert[0] - sortiert[1]) / max(float(sortiert[0]), 1.0)
@@ -1322,7 +1338,7 @@ class EdgeLerner:
                 # Zerlegungs-Kaskade.
                 reinheit = np.clip(pro_klasse / max(probe_punkte, 8),
                                    0.0, 1.0)
-                anteile = np.minimum(wiederfindung, reinheit)
+                anteile = self._kalibriere(np.minimum(wiederfindung, reinheit))
                 beste = int(np.argmax(pro_klasse))
                 self.letzter_fehler = ""
 

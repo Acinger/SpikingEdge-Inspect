@@ -1,0 +1,41 @@
+name: Verified hardware
+description: Your setup works (or partly works) — add it to the community table on spikingedge.com/get-vorsa/
+title: "[hardware] "
+labels: ["verified-hardware"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you! These six facts make your report comparable (see Evidence › Methods on spikingedge.com).
+        The UI footer shows the build; `uname -r` the kernel.
+  - type: input
+    id: build
+    attributes: { label: SE Inspect build, placeholder: "1.0.0-alpha.2" }
+    validations: { required: true }
+  - type: input
+    id: pi
+    attributes: { label: Pi model and RAM, placeholder: "Raspberry Pi 5, 8 GB" }
+    validations: { required: true }
+  - type: input
+    id: os
+    attributes: { label: OS and kernel, placeholder: "Bookworm 64-bit, 6.12.x" }
+    validations: { required: true }
+  - type: input
+    id: akida
+    attributes: { label: Akida cards, carrier, firmware, akida version, placeholder: "1 × AKD1500 PCIe on <adapter>, BC.A1.003.009, akida 2.19.3" }
+    validations: { required: true }
+  - type: input
+    id: camera
+    attributes: { label: Camera and light, placeholder: "Camera Module 3 standard, diffuse LED panel" }
+  - type: input
+    id: io
+    attributes: { label: I/O or PLC hardware (if any), placeholder: "optocoupler module on GPIO 17/22–25 · Modbus I/O module <type> · none" }
+  - type: dropdown
+    id: ergebnis
+    attributes:
+      label: Result
+      options: ["works", "works with notes", "does not work"]
+    validations: { required: true }
+  - type: textarea
+    id: notizen
+    attributes: { label: Notes, description: "What you had to change, what failed, link to your configurator setup (spikingedge.com/configure/#…)" }

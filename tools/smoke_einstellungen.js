@@ -40,6 +40,9 @@ const { JSDOM } = require("jsdom"); const BASIS = process.argv[2] || "http://127
   const rz = await (await fetch(BASIS + "/api/rezepte")).json();
   ok(!!(rz.rezepte || {})["Smoke-Programm"], "Pruefprogramm gespeichert");
   ok(/Smoke-Programm/.test($("eInhalt").textContent), "Liste zeigt das neue Programm");
+  // Wartung: Komplettsicherung (1.9.63)
+  d.querySelector('#eNav [data-id="wartung"]').click(); await warte(400);
+  ok(!!$("eInhalt").querySelector('[data-tat="sicherung_laden"]') && !!$("eInhalt").querySelector("[data-sicherung-datei]"), "Wartung: Sicherung herunterladen + einspielen");
   // Zustand oeffnet Hardware
   $("dEinstellungen").hidden = true;
   $("navZustand").click(); await warte(600);
